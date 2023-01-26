@@ -7,4 +7,4 @@ Psychologists have found that humans benefit from filling three pages with their
 
 "Thought Dump" will be a website that serves as a virtual medium for people to execute this practice. It will encourage users to type their thoughts until a word count is met. They will be able to login and track their consecutiveness with a daily streak. 
 
-Members: Anna Rudek, Caleb Navarro, Jake Dawley, Amit Melamed
+Members: Anna Rudek, Caleb Navarro, Jake Dawley, Amit Melamed 
