@@ -1,4 +1,6 @@
-﻿As a **user** I want to **journal my thoughts online**, so that **I don't need physical paper**.
+﻿As a **potential user** I want to **make an account**, so that **I can track my streak and store my entries**.
+ 
+ As a **user** I want to **journal my thoughts online**, so that **I don't need physical paper**.
 
 As a **user** I want to **track my journaling streak** so that **I feel encouraged to be consistent**.
 
