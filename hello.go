@@ -34,6 +34,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// test
 func main() {
 	http.HandleFunc("/login", login)
 	http.ListenAndServe(":8000", nil)
