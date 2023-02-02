@@ -12,6 +12,7 @@ type User struct {
 	Password string
 }
 
+// this is a test
 // login page handler function
 func login(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
