@@ -1,9 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"html/template"
 	"net/http"
+
+	firebase "firebase.google.com/go"
+	"google.golang.org/api/option"
 )
 
 var userDB = map[string]string{
@@ -40,6 +44,36 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		if _, ok := userDB[username]; !ok {
 			userDB[username] = password
 			fmt.Fprintln(w, "Signup Successful")
+
+			//connect to firebase!
+
+			ctx := context.Background()
+			config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
+			sa := option.WithCredentialsFile("C:/Users/arude/Visual Studio Code/ThoughtDump/ISEProject/serviceAccountKey.json")
+			app, err := firebase.NewApp(ctx, config, sa)
+			if err != nil {
+				fmt.Printf("error: %v\n", err)
+				return
+			}
+
+			client, err := app.Firestore(ctx)
+			if err != nil {
+				fmt.Printf("error: %v\n", err)
+				return
+			}
+
+			defer client.Close()
+
+			// Add new user to Firebase
+			_, _, err = client.Collection("users").Add(ctx, map[string]interface{}{
+				"username": username,
+				"password": password,
+			})
+			if err != nil {
+				fmt.Printf("error: %v\n", err)
+				return
+			}
+
 		} else {
 			fmt.Fprintln(w, "Username already taken")
 		}
