@@ -33,7 +33,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		//connect to firebase!
 		ctx := context.Background()
 		config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
-		sa := option.WithCredentialsFile("C:/Users/arude/Visual Studio Code/ThoughtDump/ISEProject/serviceAccountKey.json")
+		sa := option.WithCredentialsFile("C:/Projects/ISEProject/ISEProject/serviceAccountKey.json")
 		app, err := firebase.NewApp(ctx, config, sa)
 		if err != nil {
 			fmt.Printf("error: %v\n", err)
@@ -90,11 +90,10 @@ func signup(w http.ResponseWriter, r *http.Request) {
 			userDB[username] = password
 			fmt.Fprintln(w, "Signup Successful")
 
-			//connect to firebase!
-
+			// Connect to Firebase
 			ctx := context.Background()
 			config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
-			sa := option.WithCredentialsFile("C:/Users/arude/Visual Studio Code/ThoughtDump/ISEProject/serviceAccountKey.json")
+			sa := option.WithCredentialsFile("C:/Projects/ISEProject/ISEProject/serviceAccountKey.json")
 			app, err := firebase.NewApp(ctx, config, sa)
 			if err != nil {
 				fmt.Printf("error: %v\n", err)
@@ -106,11 +105,11 @@ func signup(w http.ResponseWriter, r *http.Request) {
 				fmt.Printf("error: %v\n", err)
 				return
 			}
-
 			defer client.Close()
 
-			// Add new user to Firebase
-			_, _, err = client.Collection("users").Add(ctx, map[string]interface{}{
+			// Write the new user to Firebase
+			docRef := client.Collection("users").Doc(username)
+			_, err = docRef.Set(ctx, map[string]interface{}{
 				"username": username,
 				"password": password,
 			})
@@ -118,7 +117,6 @@ func signup(w http.ResponseWriter, r *http.Request) {
 				fmt.Printf("error: %v\n", err)
 				return
 			}
-
 		} else {
 			fmt.Fprintln(w, "Username already taken")
 		}
