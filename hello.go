@@ -15,6 +15,11 @@ var userDB = map[string]string{
 	"user2": "password2",
 }
 
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 func login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -24,11 +29,51 @@ func login(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		username := r.Form.Get("username")
 		password := r.Form.Get("password")
-		if p, ok := userDB[username]; ok && p == password {
+
+		//connect to firebase!
+		ctx := context.Background()
+		config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
+		sa := option.WithCredentialsFile("C:/Users/arude/Visual Studio Code/ThoughtDump/ISEProject/serviceAccountKey.json")
+		app, err := firebase.NewApp(ctx, config, sa)
+		if err != nil {
+			fmt.Printf("error: %v\n", err)
+			return
+		}
+
+		client, err := app.Firestore(ctx)
+		if err != nil {
+			fmt.Printf("error: %v\n", err)
+			return
+		}
+
+		defer client.Close()
+
+		// Check if the user exists in Firebase
+		docRef := client.Doc("users/" + username)
+		snapshot, err := docRef.Get(ctx)
+		if err != nil {
+			fmt.Fprintln(w, "Login Failed- error in retrieving data")
+			fmt.Println("Error:", err)
+			return
+		}
+
+		if snapshot == nil {
+			fmt.Fprintln(w, "Login Failed - document doesnt exist")
+			return
+		}
+
+		var user User
+		if err := snapshot.DataTo(&user); err != nil {
+			fmt.Fprintln(w, "Login Failed - snapshot data cant be converted to struct type")
+			return
+		}
+
+		if user.Password == password {
 			fmt.Fprintln(w, "Login Successful")
 		} else {
-			fmt.Fprintln(w, "Login Failed")
+			fmt.Fprintln(w, "Login Failed - password doesnt match")
 		}
+
 	}
 }
 
