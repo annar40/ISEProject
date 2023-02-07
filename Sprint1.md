@@ -1,4 +1,8 @@
-﻿As a **potential user** I want to **make an account**, so that **I can track my streak and store my entries**.
+## User Stories
+ 
+ As a **potential user** I want to **make an account**, so that **I can track my streak and store my entries**.
+ 
+ As a **user** I want to **log into my account**, so that **I can update my streak and store my entries**.
  
  As a **user** I want to **journal my thoughts online**, so that **I don't need physical paper**.
 
@@ -17,3 +21,18 @@ As a **user** I want to **have access to my past entries after a certain amount 
 As a **user** I want to **be able to create general tags for each entry** so that I can **easily compare my prominent emotions over a time span**.
 
 As a **user** I want to be able to **download and share my previous entries after a certain amount of time** so that I can **permanently store my writing on my own device**.
+
+## Sprint 1 issues planned to address:
+#### Backend: 
+Create backend to allow for sign up and login.
+
+Back up created accounts with Firebase.
+
+#### Frontend:
+Create sign up page.
+
+Create sign in page.
+## Successfully completed issues:
+User sign up and login functioning with frontend and backend.
+
+## Incomplete issues: 
