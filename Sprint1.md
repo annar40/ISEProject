@@ -36,3 +36,5 @@ Create sign in page.
 User sign up and login functioning with frontend and backend.
 
 ## Incomplete issues: 
+We were unable to create the text box for the user to write their entries. 
+This incompletion is due to time constraints. Inexperience with Angular and Firebase affected overal progress.
