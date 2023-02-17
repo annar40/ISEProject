@@ -20,7 +20,7 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func login(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		t, _ := template.ParseFiles("login.html")
@@ -124,7 +124,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/login", login)
+	http.HandleFunc("/login", Login)
 	http.HandleFunc("/signup", signup)
 	http.ListenAndServe(":8000", nil)
 }
