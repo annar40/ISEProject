@@ -5,11 +5,11 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"strings"
-	"test/main"
 	"testing"
 )
 
 func TestLogin(t *testing.T) {
+
 	// create a request object for GET method
 	req, err := http.NewRequest("GET", "/login", nil)
 	if err != nil {
@@ -29,8 +29,8 @@ func TestLogin(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-
 	// create a request object for POST method
+	//using username and password that is stored in Firebase
 	form := url.Values{}
 	form.Add("username", "ashley")
 	form.Add("password", "kelly")
@@ -41,11 +41,23 @@ func TestLogin(t *testing.T) {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
+	// create a ResponseRecorder to record the response
 	rr = httptest.NewRecorder()
 
+	// create a http.HandlerFunc for the handler function
+	handler = http.HandlerFunc(Login)
+
+	// serve the request using the handler function
 	handler.ServeHTTP(rr, req)
 
+	// check if the status code is 200 OK
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+
+	// check if the response body contains the "Login Successful" message
+	expectedBody := "Login Successful"
+	if !strings.Contains(rr.Body.String(), expectedBody) {
+		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expectedBody)
 	}
 }

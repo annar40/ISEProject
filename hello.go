@@ -33,7 +33,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		//connect to firebase!
 		ctx := context.Background()
 		config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
-		sa := option.WithCredentialsFile("C:/Projects/ISEProject/ISEProject/serviceAccountKey.json")
+		sa := option.WithCredentialsFile("C:/Users/arude/ThoughtDump/serviceAccountKey.json")
 		app, err := firebase.NewApp(ctx, config, sa)
 		if err != nil {
 			fmt.Printf("error: %v\n", err)
@@ -93,7 +93,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 			// Connect to Firebase
 			ctx := context.Background()
 			config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
-			sa := option.WithCredentialsFile("C:/Projects/ISEProject/ISEProject/serviceAccountKey.json")
+			sa := option.WithCredentialsFile("C:/Users/arude/ThoughtDump/serviceAccountKey.json")
 			app, err := firebase.NewApp(ctx, config, sa)
 			if err != nil {
 				fmt.Printf("error: %v\n", err)
