@@ -2,129 +2,103 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"html/template"
+	"log"
 	"net/http"
+
+	"github.com/rs/cors"
 
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/option"
 )
 
-var userDB = map[string]string{
-	"user1": "password1",
-	"user2": "password2",
-}
-
 type User struct {
-	Username string `json:"username"`
+	Name     string `json:"name"`
+	Phone    string `json:"phone"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func login(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		t, _ := template.ParseFiles("login.html")
-		t.Execute(w, nil)
-	case http.MethodPost:
-		r.ParseForm()
-		username := r.Form.Get("username")
-		password := r.Form.Get("password")
-
-		//connect to firebase!
-		ctx := context.Background()
-		config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
-		sa := option.WithCredentialsFile("C:/Projects/ISEProject/ISEProject/serviceAccountKey.json")
-		app, err := firebase.NewApp(ctx, config, sa)
-		if err != nil {
-			fmt.Printf("error: %v\n", err)
-			return
-		}
-
-		client, err := app.Firestore(ctx)
-		if err != nil {
-			fmt.Printf("error: %v\n", err)
-			return
-		}
-
-		defer client.Close()
-
-		// Check if the user exists in Firebase
-		docRef := client.Doc("users/" + username)
-		snapshot, err := docRef.Get(ctx)
-		if err != nil {
-			fmt.Fprintln(w, "Login Failed- error in retrieving data")
-			fmt.Println("Error:", err)
-			return
-		}
-
-		if snapshot == nil {
-			fmt.Fprintln(w, "Login Failed - document doesnt exist")
-			return
-		}
-
-		var user User
-		if err := snapshot.DataTo(&user); err != nil {
-			fmt.Fprintln(w, "Login Failed - snapshot data cant be converted to struct type")
-			return
-		}
-
-		if user.Password == password {
-			fmt.Fprintln(w, "Login Successful")
-		} else {
-			fmt.Fprintln(w, "Login Failed - password doesnt match")
-		}
-
-	}
-}
-
-func signup(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		t, _ := template.ParseFiles("signup.html")
-		t.Execute(w, nil)
-	case http.MethodPost:
-		r.ParseForm()
-		username := r.Form.Get("username")
-		password := r.Form.Get("password")
-		if _, ok := userDB[username]; !ok {
-			userDB[username] = password
-			fmt.Fprintln(w, "Signup Successful")
-
-			// Connect to Firebase
-			ctx := context.Background()
-			config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
-			sa := option.WithCredentialsFile("C:/Projects/ISEProject/ISEProject/serviceAccountKey.json")
-			app, err := firebase.NewApp(ctx, config, sa)
-			if err != nil {
-				fmt.Printf("error: %v\n", err)
-				return
-			}
-
-			client, err := app.Firestore(ctx)
-			if err != nil {
-				fmt.Printf("error: %v\n", err)
-				return
-			}
-			defer client.Close()
-
-			// Write the new user to Firebase
-			docRef := client.Collection("users").Doc(username)
-			_, err = docRef.Set(ctx, map[string]interface{}{
-				"username": username,
-				"password": password,
-			})
-			if err != nil {
-				fmt.Printf("error: %v\n", err)
-				return
-			}
-		} else {
-			fmt.Fprintln(w, "Username already taken")
-		}
-	}
-}
-
 func main() {
-	http.HandleFunc("/login", login)
-	http.HandleFunc("/signup", signup)
-	http.ListenAndServe(":8000", nil)
+	// Initialize Firebase app
+	ctx := context.Background()
+	config := &firebase.Config{
+		ProjectID: "thoughtdump-4b31d",
+	}
+	opt := option.WithCredentialsFile("C:/Projects/ISEProject/ISEProject/serviceAccountKey.json")
+	app, err := firebase.NewApp(ctx, config, opt)
+	if err != nil {
+		log.Fatalf("error initializing app: %v", err)
+	}
+
+	// Create Firestore client
+	client, err := app.Firestore(ctx)
+	if err != nil {
+		log.Fatalf("error creating Firestore client: %v", err)
+	}
+	defer client.Close()
+	c := cors.Default()
+
+	// Signup handler
+	http.Handle("/signup", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Parse form data
+		var user User
+		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+			http.Error(w, "error parsing form data", http.StatusBadRequest)
+			return
+		}
+
+		// Write user data to Firestore
+		docRef, _, err := client.Collection("users").Add(ctx, map[string]interface{}{
+			"name":     user.Name,
+			"phone":    user.Phone,
+			"email":    user.Email,
+			"password": user.Password,
+		})
+		if err != nil {
+			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
+			return
+		}
+
+		// Send success response
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "User data written to Firestore with ID: %v", docRef.ID)
+	})))
+
+	// Login handler
+	http.Handle("/login", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Parse form data
+		var user User
+		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+			http.Error(w, "error parsing form data", http.StatusBadRequest)
+			return
+		}
+
+		// Get document with provided name
+		docRef := client.Collection("users").Doc(user.Name)
+		docSnap, err := docRef.Get(ctx)
+		if err != nil {
+			http.Error(w, "error getting user data from Firestore", http.StatusInternalServerError)
+			return
+		}
+
+		// Check if email and password match
+		var userData User
+		if err := docSnap.DataTo(&userData); err != nil {
+			http.Error(w, "error parsing user data from Firestore", http.StatusInternalServerError)
+			return
+		}
+		if userData.Email != user.Email || userData.Password != user.Password {
+			http.Error(w, "incorrect email or password", http.StatusUnauthorized)
+			return
+		}
+
+		// Send success response
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "Login successful")
+	})))
+
+	// Start HTTP server
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }

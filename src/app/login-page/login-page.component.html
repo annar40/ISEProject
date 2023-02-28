@@ -1,17 +1,25 @@
-
 <div fxLayoutAlign="center center" fxFlexFill class="login-container">
-    <mat-card fxFlex = "20">
-      <mat-toolbar color= primary>Welcome back</mat-toolbar>
-      <form fxLayoutAlign="stretch" fxLayout="column" class ="login-form">
-          <mat-form-field appearance="fill">
-              <mat-label>Enter your e-mail</mat-label>
-              <input matInput type = "email" placeholder="Ex. hello@world.com">
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-              <mat-label>Enter your password</mat-label>
-            <input matInput type = password placeholder="password">
-          </mat-form-field>
-          <button mat-stroked-button type="submit">Sign in</button>
-      </form>    
-    </mat-card> 
+  <mat-card fxFlex="20">
+    <mat-toolbar color="primary">Welcome back</mat-toolbar>
+    <form fxLayoutAlign="stretch" fxLayout="column" class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="w-75">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" formControlName="name">
+        <mat-error *ngIf="loginForm.get('name')?.hasError('required')">Name is <strong>required</strong></mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Enter your e-mail</mat-label>
+        <input matInput type="email" autocomplete="email" formControlName="email">
+        <mat-error *ngIf="loginForm.get('email')?.hasError('email') && !loginForm.get('email')?.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is <strong>required</strong></mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Enter your password</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="new-password">
+      </mat-form-field>
+      <button mat-stroked-button type="submit">Sign in</button>
+    </form>
+  </mat-card>
 </div>
