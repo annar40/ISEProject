@@ -18,8 +18,6 @@ export class SignupPageComponent implements OnInit {
   signupForm: FormGroup = new FormGroup(
     {
       name: new FormControl('', [Validators.required]),
-      lastName: new FormControl('', [Validators.required]),
-      phoneNumber: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
         Validators.required,
@@ -43,7 +41,7 @@ export class SignupPageComponent implements OnInit {
 
     this.httpClient
       .post(
-        'https://thoughtdump-4b31d-default-rtdb.firebaseio.com/users.json',
+        'http://localhost:8000/signup',
         this.signupForm.value
       )
       .subscribe(
