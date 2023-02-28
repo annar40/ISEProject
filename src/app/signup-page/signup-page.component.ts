@@ -31,8 +31,9 @@ export class SignupPageComponent implements OnInit {
   );
 
   constructor(
-           private httpClient: HttpClient
-    
+    private router: Router,
+    private httpClient: HttpClient,
+    private activatedRoute: ActivatedRoute
   ) {}
 
    ngOnInit(): void {}
@@ -45,7 +46,17 @@ export class SignupPageComponent implements OnInit {
         'https://thoughtdump-4b31d-default-rtdb.firebaseio.com/users.json',
         this.signupForm.value
       )
-      .subscribe((response) => console.log(response))
-          
-      }
+      .subscribe(
+        (response) => {
+          console.log('response', response);
+          this.signupForm.reset();
+          this.router.navigate(['../', 'login'], {
+            relativeTo: this.activatedRoute,
+          });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   }
+}
