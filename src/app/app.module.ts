@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,10 +16,10 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
 import { MainNavbarComponent } from './main-navbar/main-navbar.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
-    AppComponent,
     LoginPageComponent,
     SignupPageComponent,
     MainNavbarComponent,
@@ -28,6 +28,7 @@ import { AboutPageComponent } from './about-page/about-page.component';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
@@ -35,7 +36,8 @@ import { AboutPageComponent } from './about-page/about-page.component';
     MatButtonModule,
     MatCardModule,
     MatToolbarModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

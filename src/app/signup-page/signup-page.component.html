@@ -12,12 +12,6 @@
             <input matInput placeholder="Ex. James">
           </mat-form-field>
 
-
-          <mat-form-field >
-            <mat-label>Phone Number</mat-label>
-            <input matInput type = "tel" placeholder="Ex. 5614449870">
-          </mat-form-field>
-
           <mat-form-field >
             <mat-label>Email</mat-label>
             <input matInput type = "email" placeholder="Ex. johnjames@gmail.com">
@@ -30,7 +24,8 @@
             <mat-label>Confirm Password</mat-label>
             <input matInput type = "password" placeholder="Ex. 5614449870">
           </mat-form-field>
-          <button mat mat-stroked-button type= "Csubmit">Create Account</button>
+          <button mat mat-stroked-button type= "Csubmit" (click)="submitForm()">Create Account</button>
+
       </form>
       </mat-card>
   </div>
