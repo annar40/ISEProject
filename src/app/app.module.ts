@@ -16,6 +16,9 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
 import { MainNavbarComponent } from './main-navbar/main-navbar.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -27,6 +30,9 @@ import { AboutPageComponent } from './about-page/about-page.component';
     AboutPageComponent
   ],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
