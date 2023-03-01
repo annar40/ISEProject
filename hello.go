@@ -26,7 +26,7 @@ func main() {
 	config := &firebase.Config{
 		ProjectID: "thoughtdump-4b31d",
 	}
-	opt := option.WithCredentialsFile("C:/Projects/ISEProject/ISEProject/serviceAccountKey.json")
+	opt := option.WithCredentialsFile("C:/Users/arude/ThoughtDump/serviceAccountKey.json")
 	app, err := firebase.NewApp(ctx, config, opt)
 	if err != nil {
 		log.Fatalf("error initializing app: %v", err)
@@ -41,7 +41,8 @@ func main() {
 	c := cors.Default()
 
 	// Signup handler
-	http.Handle("/signup", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// http.Handle("/signup", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	signupHandler := func(w http.ResponseWriter, r *http.Request) {
 		// Parse form data
 		var user User
 		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -64,10 +65,14 @@ func main() {
 		// Send success response
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "User data written to Firestore with ID: %v", docRef.ID)
-	})))
+	}
+	// Attach signup handler to HTTP server
+	http.Handle("/signup", c.Handler(http.HandlerFunc(signupHandler)))
 
 	// Login handler
-	http.Handle("/login", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// http.Handle("/login", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	loginHandler := func(w http.ResponseWriter, r *http.Request) {
+
 		// Parse form data
 		var user User
 		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -97,8 +102,9 @@ func main() {
 		// Send success response
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, "Login successful")
-	})))
-
+	}
+	// Attach signup handler to HTTP server
+	http.Handle("/login", c.Handler(http.HandlerFunc(loginHandler)))
 	// Start HTTP server
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
