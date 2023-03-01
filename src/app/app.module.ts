@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import {MatIconModule} from '@angular/material/icon';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,6 +17,7 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
 import { MainNavbarComponent } from './main-navbar/main-navbar.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
+import { TextboxPageComponent } from './textbox-page/textbox-page.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { AboutPageComponent } from './about-page/about-page.component';
     SignupPageComponent,
     MainNavbarComponent,
     HomePageComponent,
-    AboutPageComponent
+    AboutPageComponent,
+    TextboxPageComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +38,8 @@ import { AboutPageComponent } from './about-page/about-page.component';
     MatButtonModule,
     MatCardModule,
     MatToolbarModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
