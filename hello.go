@@ -50,7 +50,7 @@ func main() {
 		}
 
 		// Write user data to Firestore
-		docRef, _, err := client.Collection("users").Add(ctx, map[string]interface{}{
+		_, err := client.Collection("users").Doc(user.Name).Set(ctx, map[string]interface{}{
 			"name":     user.Name,
 			"phone":    user.Phone,
 			"email":    user.Email,
@@ -63,7 +63,7 @@ func main() {
 
 		// Send success response
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "User data written to Firestore with ID: %v", docRef.ID)
+		fmt.Fprint(w, "User data written to Firestore")
 	})))
 
 	// Login handler
