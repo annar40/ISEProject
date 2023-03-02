@@ -13,7 +13,14 @@ If the login information is not completely filled out, the "sign in" button will
 
 
 
-## Unit Tests & Cypress Test for Frontend
+## Unit Tests for Frontend
+1. Password must be at least 5 characters.
+
+2. All components must be filled for login to true
+
+3. Name field is empty 
+
+## Cypress Test
 
 ## Unit Tests for Backend
 func TestSignupHandler(t *testing.T) -checks for server status 200  and message "Login Successful"
