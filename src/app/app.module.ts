@@ -17,7 +17,10 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
 import { MainNavbarComponent } from './main-navbar/main-navbar.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { TextboxPageComponent } from './textbox-page/textbox-page.component';
+
 
 @NgModule({
   declarations: [
@@ -30,6 +33,9 @@ import { TextboxPageComponent } from './textbox-page/textbox-page.component';
     TextboxPageComponent
   ],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,

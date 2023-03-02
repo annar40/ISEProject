@@ -8,7 +8,7 @@ import { AboutPageComponent } from './about-page/about-page.component';
 import { TextboxPageComponent } from './textbox-page/textbox-page.component';
 
 
-const routes: Routes = [
+export const routes: Routes = [
   {path: 'home', component:HomePageComponent},
   {path:'login', component:LoginPageComponent},
   {path:'about', component:AboutPageComponent},
