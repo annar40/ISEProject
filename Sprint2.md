@@ -1,3 +1,7 @@
+## Join Zoom Meeting
+https://ufl.zoom.us/j/9528379177
+
+
 ## Work Completed in Sprint 2
 
 We had many troubles connecting our frontend and backend together. 
