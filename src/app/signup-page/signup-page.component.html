@@ -9,7 +9,7 @@
           Name is <strong>required</strong>
         </mat-error>
       </mat-form-field>
-            <mat-form-field>
+      <mat-form-field>
         <mat-label>Email</mat-label>
         <input
           matInput
@@ -71,7 +71,7 @@
           Password is <strong>required</strong>
         </mat-error>
       </mat-form-field>
-      <button mat-stroked-button type="submit">Create Account</button>
+      <button mat-stroked-button type="submit" [disabled]="signupForm.invalid" >Create Account</button>
     </form>
   </mat-card>
 </div>
