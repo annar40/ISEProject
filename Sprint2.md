@@ -23,56 +23,32 @@ func TestLoginHandler(t *testing.T) -checks for server status 200 and message "U
 
 ## **API Documentation:**
 
-This code package implements a simple HTTP server that allows users to sign up and login. The server uses Firebase to store user data and Google Cloud's Firestore client to interact with Firebase. The server is designed to handle two API endpoints: /signup and /login.
+API Documentation: Package Name: Firebase Auth API Package Description: This package provides APIs to handle user authentication using Firebase and Firestore.
 
-**Signup Endpoint**
-This endpoint allows users to sign up by sending a POST request with the user's information in JSON format.
+**Imported Packages:**
 
-Request
-HTTP method: POST
-Endpoint: /signup
-Request body:
+context: This package is used for passing context between functions. encoding/json: This package is used to encode and decode JSON data. fmt: This package is used for formatting output. log: This package is used for logging error messages. net/http: This package is used to implement HTTP client and server. cloud.google.com/go/firestore: This package is used to interact with Firestore. firebase.google.com/go: This package is used to initialize Firebase app. github.com/rs/cors: This package is used to handle Cross-Origin Resource Sharing (CORS). google.golang.org/api/option: This package is used to provide options for authentication and other settings.
 
-JSON: {
-    "name": "string",
-    "phone": "string",
-    "email": "string",
-    "password": "string"
-}
+**Structures:**
 
-**Response**
-HTTP status code: 200 OK
-Response body: "User data written to Firestore with ID: {ID}", where {ID} is the ID of the Firestore document that was created for the user.
-If there is an error, the server will respond with an HTTP status code of 500 Internal Server Error.
+User: This structure is used to represent user information. It contains four fields: Name: string, the name of the user. Phone: string, the phone number of the user. Email: string, the email address of the user. Password: string, the password of the user.
 
+**Variables:**
 
+ctx: context.Context, a context for passing context between functions.
 
+**Functions:**
 
-**Login Endpoint**
-This endpoint allows users to log in by sending a POST request with the user's name, email, and password in JSON format. The server will check if the email and password match the user's information in Firebase.
+main(): This function is the entry point of the program. It initializes the Firebase app and creates a Firestore client. Then it attaches signup and login handlers to the HTTP server and starts the server.
 
-**Request**
-HTTP method: POST
-Endpoint: /login
-Request body:
+signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request): This function is used to handle user signup requests. It takes a Firestore client as an input parameter and returns a function that handles HTTP requests. This function parses form data, writes user data to Firestore, and sends a success response.
 
-JSON:{
-    "name": "string",
-    "email": "string",
-    "password": "string"
-}
+loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request): This function is used to handle user login requests. It takes a Firestore client as an input parameter and returns a function that handles HTTP requests. This function parses form data, retrieves user data from Firestore, checks if email and password match, and sends a success response if the login is successful.
 
-**Response**
-HTTP status code: 200 OK
-Response body: "Login successful"
-If the email and password do not match the user's information in Firebase, the server will respond with an HTTP status code of 401 Unauthorized.
-If there is an error, the server will respond with an HTTP status code of 500 Internal Server Error.
-Firebase Initialization
-The main function initializes Firebase with the project ID and a path to the service account key file. The Firestore client is then created with the initialized app.
+**API Endpoints:**
 
-**CORS**
-The main function uses the rs/cors package to enable Cross-Origin Resource Sharing (CORS) for the HTTP server.
+/signup: This endpoint is used for user signup requests. It accepts a POST request with user data in JSON format. The user data must contain the name, email, and password fields. If the signup is successful, it sends a 200 OK response with the message "User data written to Firestore".
 
-**HTTP Server**
-The main function starts an HTTP server that listens on port 8000. The server handles requests to the /signup and /login endpoints using the signupHandler and loginHandler functions, respectively.
+/login: This endpoint is used for user login requests. It accepts a POST request with user data in JSON format. The user data must contain the name, email, and password fields. If the login is successful, it sends a 200 OK response with the message "Login Successful".
 
+Sample Usage: To use this package, you can import it in your Go program and call the main function. You can then send HTTP requests to the /signup and /login endpoints to handle user signup and login requests.
