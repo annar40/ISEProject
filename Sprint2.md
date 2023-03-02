@@ -1,4 +1,4 @@
-## Work completed in Sprint 2
+## Work Completed in Sprint 2
 
 We had many troubles connecting our frontend and backend together. 
 
@@ -13,9 +13,9 @@ If the login information is not completely filled out, the "sign in" button will
 
 
 
-## Unit tests & Cypress test for frontend
+## Unit Tests & Cypress Test for Frontend
 
-## List unit tests for backend
+## Unit Tests for Backend
 func TestSignupHandler(t *testing.T) -checks for server status 200  and message "Login Successful"
 
 func TestLoginHandler(t *testing.T) -checks for server status 200 and message "User data written to Firestore"
