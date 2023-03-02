@@ -63,8 +63,8 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 
 		// Write user data to Firestore
 		_, err := client.Collection("users").Doc(user.Name).Set(ctx, map[string]interface{}{
+
 			"name": user.Name,
-			// "phone":    user.Phone,
 			"email":    user.Email,
 			"password": user.Password,
 		})
@@ -75,6 +75,7 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 
 		// Send success response
 		w.WriteHeader(http.StatusOK)
+
 		fmt.Fprintf(w, "User data written to Firestore")
 	}
 }
