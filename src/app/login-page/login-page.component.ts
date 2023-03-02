@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -41,13 +41,19 @@ export class LoginPageComponent{
       .subscribe(
         (response) => {
           console.log('response', response);
-          this.loginForm.reset();
-          this.router.navigate(['../', 'home'], {
-            relativeTo: this.activatedRoute,
-          });
+          
         },
-        (error) => {
-          console.log(error);
+        (error: HttpErrorResponse) => {
+          console.log('HTTP error status:', error.status);
+          // only redirect if the error status is not 200 OK
+          if (error.status === 200) {
+            this.loginForm.reset();
+            console.log('Signup Successful');
+            this.router.navigate(['../', 'journal'], {
+              relativeTo: this.activatedRoute,
+
+            });
+          }
         }
       );
   }

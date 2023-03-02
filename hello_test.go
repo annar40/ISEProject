@@ -31,7 +31,7 @@ func TestLoginHandler(t *testing.T) {
 	config := &firebase.Config{
 		ProjectID: "thoughtdump-4b31d",
 	}
-	opt := option.WithCredentialsFile("C:/Users/arude/ThoughtDump/serviceAccountKey.json")
+	opt := option.WithCredentialsFile("./serviceAccountKey.json")
 	app, err := firebase.NewApp(ctx, config, opt)
 	if err != nil {
 		t.Fatalf("error initializing app: %v", err)
@@ -71,7 +71,7 @@ func TestSignupHandler(t *testing.T) {
 	// Initialize Firebase app and create Firestore client
 	ctx := context.Background()
 	config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
-	opt := option.WithCredentialsFile("C:/Users/arude/ThoughtDump/serviceAccountKey.json")
+	opt := option.WithCredentialsFile("./serviceAccountKey.json")
 	app, err := firebase.NewApp(ctx, config, opt)
 	if err != nil {
 		t.Fatalf("error initializing app: %v", err)
