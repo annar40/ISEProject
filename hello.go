@@ -28,7 +28,7 @@ func main() {
 	config := &firebase.Config{
 		ProjectID: "thoughtdump-4b31d",
 	}
-	opt := option.WithCredentialsFile("C:/Users/arude/ThoughtDump/serviceAccountKey.json")
+	opt := option.WithCredentialsFile("./serviceAccountKey.json")
 	app, err := firebase.NewApp(ctx, config, opt)
 	if err != nil {
 		log.Fatalf("error initializing app: %v", err)
