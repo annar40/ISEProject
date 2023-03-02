@@ -32,7 +32,7 @@ Phone: string, the phone number of the user.
 Email: string, the email address of the user.
 Password: string, the password of the user.
 
-""Variables:""
+**Variables:**
 
 ctx: context.Context, a context for passing context between functions.
 
