@@ -1,6 +1,3 @@
-## Join Zoom Meeting
-https://ufl.zoom.us/j/9528379177
-
 
 ## Work Completed in Sprint 2
 
@@ -11,20 +8,75 @@ Forms were added to the sign up and login typescrpit components to send the info
 
 Once the golang and angular were integrated, backend unit tests were written for the login and signup functions alongside front end test.
 
-The journaling and home pages were created. The sign up page routes users to the login page upon account creation. The login page routes users to the journal page upon successful login.  
+A navigation bar was added along with buttons for routing: home, log in, sign up, and about
 
-If the login information is not completely filled out, the "sign in" button will appear grey and unuasble.
+The journaling page was created, along with components for filling out the about and home pages in the future. The sign up page routes users to the login page upon account creation. The login page routes users to the journal page upon successful login.  
+
+If the login information is not completely filled out or is invalid, the "sign in" button will appear grey and unuasble.
 
 
 
 ## Unit Tests for Frontend
 1. Password must be at least 5 characters.
 
-2. All components must be filled for login to true
+  it('form should be invalid -- password field is too short', async() => {
+  
+    fixture = TestBed.createComponent(LoginPageComponent);
+    comp = fixture.componentInstance;
 
-3. Name field is empty 
+    comp.loginForm.controls['name'].setValue('John');
+    comp.loginForm.controls['email'].setValue('john@gmail.com');
+    comp.loginForm.controls['password'].setValue('abc');
+    expect(comp.loginForm.valid).toBeFalsy();
+  });
+
+2. Name field is empty
+it('form should be invalid -- name field is empty', async() => {
+  
+    fixture = TestBed.createComponent(LoginPageComponent);
+    comp = fixture.componentInstance;
+
+    comp.loginForm.controls['name'].setValue('');
+    comp.loginForm.controls['email'].setValue('john@gmail.com');
+    comp.loginForm.controls['password'].setValue('abc123');
+    expect(comp.loginForm.valid).toBeFalsy();
+  });
+
+3.  All components must be filled for login to true
+
+  it('form should be valid -- all login fields filled', async() => {
+  
+    fixture = TestBed.createComponent(LoginPageComponent);
+    comp = fixture.componentInstance;
+
+    comp.loginForm.controls['name'].setValue('John');
+    comp.loginForm.controls['email'].setValue('john@gmail.com');
+    comp.loginForm.controls['password'].setValue('abc123');
+    expect(comp.loginForm.valid).toBeTruthy();
+  });
+
 
 ## Cypress Test
+1. Check for mounting success of navigation bar
+
+describe('MainNavbarComponent', ()=>{
+    it('can mount', () =>{
+        cy.mount(MainNavbarComponent);
+    })
+});
+
+
+2. Check for a valid click on first button (home button) on the navigation bar
+ 
+describe('MainNavBarComponent', () => {
+    
+    it('expected a logged successful click on home', () => {
+      cy.mount(MainNavbarComponent);
+      cy.get('a').eq(0).click();
+    });
+  });
+
+
 
 ## Unit Tests for Backend
 func TestSignupHandler(t *testing.T) -checks for server status 200  and message "Login Successful"
