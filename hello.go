@@ -7,9 +7,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/rs/cors"
-
+	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
+	"github.com/rs/cors"
 	"google.golang.org/api/option"
 )
 
@@ -19,6 +19,8 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+var ctx = context.Background()
 
 func main() {
 	// Initialize Firebase app
@@ -38,11 +40,20 @@ func main() {
 		log.Fatalf("error creating Firestore client: %v", err)
 	}
 	defer client.Close()
+
 	c := cors.Default()
 
-	// Signup handler
-	// http.Handle("/signup", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	signupHandler := func(w http.ResponseWriter, r *http.Request) {
+	// Attach signup handler to HTTP server
+	http.Handle("/signup", c.Handler(http.HandlerFunc(signupHandler(client))))
+
+	// Attach login handler to HTTP server
+	http.Handle("/login", c.Handler(http.HandlerFunc(loginHandler(client))))
+
+	// Start HTTP server
+	log.Fatal(http.ListenAndServe(":8000", nil))
+}
+func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// Parse form data
 		var user User
 		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -66,13 +77,9 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "User data written to Firestore with ID: %v", docRef.ID)
 	}
-	// Attach signup handler to HTTP server
-	http.Handle("/signup", c.Handler(http.HandlerFunc(signupHandler)))
-
-	// Login handler
-	// http.Handle("/login", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	loginHandler := func(w http.ResponseWriter, r *http.Request) {
-
+}
+func loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// Parse form data
 		var user User
 		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -101,10 +108,6 @@ func main() {
 
 		// Send success response
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "Login successful")
+		fmt.Fprintf(w, "User data written to Firestore with ID")
 	}
-	// Attach signup handler to HTTP server
-	http.Handle("/login", c.Handler(http.HandlerFunc(loginHandler)))
-	// Start HTTP server
-	log.Fatal(http.ListenAndServe(":8000", nil))
 }
