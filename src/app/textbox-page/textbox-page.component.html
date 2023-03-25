@@ -1,51 +1,65 @@
 <div class="jumbotron p-3">
-    <h2> Word Counter</h2>
-    </div>
-    <div class="col text-right">
-        <button class="btn btn-danger" id="clearbutton" >
-            Clear
-        </button>
-    </div>
-    
-    <div class = "Pen">
-    <h4> Choose Your Pen! ✍🏼    </h4>
-    <mat-form-field appearance="fill">
-        <mat-label> Font </mat-label>
-        <select matNativeControl required>
-            <option value= "Verdana, Geneva, Tahoma, sans-serif">font-family:Verdana, Geneva, Tahoma, sans-serif</option>
-        </select>
-    </mat-form-field>
-    </div>
-    
-    <div class = "journal">
-    <textarea onkeyup = "countwords(this)" cols = "100" rows= "50"></textarea>
-    <div class="col text-right">
-        <button class="btn btn-danger" id="clearbutton" >
-            Clear
-        </button>
-    </div>
-    </div>
-    
-    <div class = "icon" >
-        <div class = "home">
-            <button mat-icon-button color = "primary" style="background-color: antiquewhite;" >
-                <mat-icon>
-                    home
-                </mat-icon>
-            </button>
-            </div>
-    <div class = "delete">
-    <button mat-icon-button color = "primary" style="background-color: antiquewhite;" >
-        <mat-icon>
-            delete
-        </mat-icon>
+  <h2> Word Counter</h2>
+</div>
+ <form fxLayoutAlign="stretch" fxLayout="column" class="mt-3" [formGroup]="journalForm" (ngSubmit)="onSubmit()">
+  <div class="col text-right">
+    <button class="btn btn-danger" id="clearbutton">
+      Clear
     </button>
+  </div>
+  <div class="Pen">
+    <h4> Choose Your Pen! ✍🏼 </h4>
+    <mat-form-field appearance="fill">
+      <mat-label>Font</mat-label>
+      <select matNativeControl required>
+        <option value="Verdana, Geneva, Tahoma, sans-serif"
+          >font-family:Verdana, Geneva, Tahoma, sans-serif</option
+        >
+      </select>
+    </mat-form-field>
+  </div>
+
+  <div class="journal">
+    <textarea
+      onkeyup="countwords(this)"
+      cols="100"
+      rows="50"
+      formControlName="journalEntry"
+    ></textarea>
+    <div class="col text-right">
+      <button class="btn btn-danger" id="clearbutton">Clear</button>
     </div>
-    <div class = "submit">
-        <button mat-icon-button color = "primary" style="background-color: antiquewhite;" >
-            <mat-icon>
-                check_circle
-            </mat-icon>
-        </button>
-        </div>
+  </div>
+
+  <div class="icon">
+    <div class="home">
+      <button
+        mat-icon-button
+        color="primary"
+        style="background-color: antiquewhite;"
+      >
+        <mat-icon>home</mat-icon>
+      </button>
     </div>
+    <div class="delete">
+      <button
+        mat-icon-button
+        color="primary"
+        style="background-color: antiquewhite;"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <div class="submit">
+      <button
+        mat-icon-button
+        color="primary"
+        style="background-color: antiquewhite;"
+        type="submit"
+        
+      >
+        <mat-icon>check_circle</mat-icon>
+      </button>
+    </div>
+  </div>
+</form>

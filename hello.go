@@ -19,6 +19,9 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+type Entry struct {
+	JournalEntry string `json:"journalEntry"`
+}
 
 var ctx = context.Background()
 
@@ -49,6 +52,8 @@ func main() {
 	// Attach login handler to HTTP server
 	http.Handle("/login", c.Handler(http.HandlerFunc(loginHandler(client))))
 
+	http.Handle("/journalEntry", c.Handler(http.HandlerFunc(journalHandler(client))))
+
 	// Start HTTP server
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
@@ -64,7 +69,7 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 		// Write user data to Firestore
 		_, err := client.Collection("users").Doc(user.Name).Set(ctx, map[string]interface{}{
 
-			"name": user.Name,
+			"name":     user.Name,
 			"email":    user.Email,
 			"password": user.Password,
 		})
@@ -110,5 +115,34 @@ func loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.
 		// Send success response
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Login Successful")
+	}
+}
+
+func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Parse form data
+		var entry Entry
+		if err := json.NewDecoder(r.Body).Decode(&entry); err != nil {
+			http.Error(w, "error parsing form data", http.StatusBadRequest)
+			return
+		}
+
+		// Write user data to Firestore
+		_, err := client.Collection("users").Doc("catherine").Collection("JournalEntry").Doc("DatePlaceholder").Set(ctx, map[string]interface{}{
+
+			"journalEntry": entry.JournalEntry,
+		})
+		if err != nil {
+			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
+			return
+		}
+		if err != nil {
+			http.Error(w, "error writing entry data to Firestore", http.StatusInternalServerError)
+			return
+		}
+
+		// Send success response
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "Entry data written to Firestore")
 	}
 }
