@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -126,9 +127,11 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 			http.Error(w, "error parsing form data", http.StatusBadRequest)
 			return
 		}
+		now := time.Now()
+		dateStr := now.Format("2006-01-02") // Format the current date as "yyyy-mm-dd"
 
 		// Write user data to Firestore
-		_, err := client.Collection("users").Doc("catherine").Collection("JournalEntry").Doc("DatePlaceholder").Set(ctx, map[string]interface{}{
+		_, err := client.Collection("users").Doc("catherine").Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
 
 			"journalEntry": entry.JournalEntry,
 		})
