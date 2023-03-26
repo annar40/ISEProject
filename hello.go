@@ -24,6 +24,8 @@ type Entry struct {
 	JournalEntry string `json:"journalEntry"`
 }
 
+var currentUser string
+
 var ctx = context.Background()
 
 func main() {
@@ -116,6 +118,7 @@ func loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.
 		// Send success response
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Login Successful")
+		currentUser = user.Name
 	}
 }
 
@@ -131,7 +134,7 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 		dateStr := now.Format("2006-01-02") // Format the current date as "yyyy-mm-dd"
 
 		// Write user data to Firestore
-		_, err := client.Collection("users").Doc("catherine").Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
+		_, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
 
 			"journalEntry": entry.JournalEntry,
 		})
