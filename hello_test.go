@@ -117,13 +117,16 @@ func TestJournalHandler(t *testing.T) {
 	jsonBody, _ := json.Marshal(user)
 	req, _ := http.NewRequest("POST", "/login", bytes.NewReader(jsonBody))
 
+	// Create a new recorder for capturing the response of login
+	rr := httptest.NewRecorder()
+
 	// Create a new journal entry request with a JSON body
 	entry := Entry{JournalEntry: "journal handler test working"}
 	jsonBody2, _ := json.Marshal(entry)
 	req2, _ := http.NewRequest("POST", "/journalEntry", bytes.NewReader(jsonBody2))
 
-	// Create a new recorder for capturing the response
-	rr := httptest.NewRecorder()
+	// Create a new recorder for capturing the response of entry
+	rr2 := httptest.NewRecorder()
 
 	// Initialize Firebase app
 	ctx := context.Background()
@@ -151,14 +154,22 @@ func TestJournalHandler(t *testing.T) {
 	// Call the journal handler
 	entryhandler := http.HandlerFunc(journalHandler(client))
 	c2 := cors.Default().Handler(entryhandler)
-	c2.ServeHTTP(rr, req2)
+	c2.ServeHTTP(rr2, req2)
 
 	// Check that the response is as expected
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v, want %v", status, http.StatusOK)
 	}
-	expected := "Login SuccessfulEntry data written to Firestore"
+	expected := "Login Successful"
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v, want %v", rr.Body.String(), expected)
+	}
+	// Check that the response is as expected
+	if status := rr2.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v, want %v", status, http.StatusOK)
+	}
+	expected2 := "Entry data written to Firestore"
+	if rr2.Body.String() != expected2 {
+		t.Errorf("handler returned unexpected body: got %v, want %v", rr2.Body.String(), expected2)
 	}
 }
