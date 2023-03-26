@@ -55,7 +55,11 @@ func main() {
 	// Attach login handler to HTTP server
 	http.Handle("/login", c.Handler(http.HandlerFunc(loginHandler(client))))
 
+	// Attach journal handler to HTTP server
 	http.Handle("/journalEntry", c.Handler(http.HandlerFunc(journalHandler(client))))
+
+	// Attach entry retriever handler to HTTP server
+	http.Handle("/retrieveEntry", c.Handler(http.HandlerFunc(retrieveEntryHandler(client))))
 
 	// Start HTTP server
 	log.Fatal(http.ListenAndServe(":8000", nil))
@@ -150,5 +154,34 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 		// Send success response
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Entry data written to Firestore")
+	}
+}
+
+func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		//temporary hardcoded date ---will have to get date from user-- new func parameter??
+		testDate := "2023-03-26"
+
+		// Get document with provided name
+		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(testDate)
+		// Get the data from the document
+		docData, err := docRef.Get(ctx)
+		if err != nil {
+			log.Fatalf("Failed to get journal entry: %v", err)
+		}
+
+		// Get the "journalEntry" field from the document data
+		journalEntry, exists := docData.Data()["journalEntry"]
+		if !exists {
+			log.Fatalf("Document does not have 'journalEntry' field")
+		}
+
+		// Print the journal entry
+		fmt.Printf("Journal Entry: %s\n", journalEntry)
+
+		// Send success response
+		// w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "entry retrieved")
 	}
 }
