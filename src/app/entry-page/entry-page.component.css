@@ -1,0 +1,44 @@
+
+
+.stepper-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2%;
+    width:90%;
+    margin-left:5%;
+    margin-right:5%;
+}
+  
+.mat-stepper-vertical{
+    width:100%;
+}
+
+  .text-box {
+    width: 100%;
+    height: 550px;
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    box-sizing: border-box;
+    overflow: auto;
+    resize: none;
+  }
+
+  .text-box:focus {
+    outline: none;
+  }
+  
+  .title-container {
+    background-color: white;
+    padding-left:3%;
+    padding-top: 3%;
+  }
+  
+  .title {
+    color: black;
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0;
+  }
+  

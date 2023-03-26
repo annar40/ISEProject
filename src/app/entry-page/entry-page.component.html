@@ -1,0 +1,31 @@
+<div class="title-container">
+    <h2 class="title">Journal entry for {{ n | date:'EEEE, MMMM d' }}</h2>
+</div>
+<div class="stepper-container">
+<mat-vertical-stepper linear = "true" #Stepper>
+    <mat-step #firstStep label="Write at least 500 words of whatever comes to mind" completed = "false">
+        <div class="text-box-container">
+          <textarea class="text-box" placeholder="What's on your mind?..." wrap="soft" [(ngModel)]="text" (keyup)="updateWordCount()"></textarea>
+        </div>
+        <mat-label>{{wordCount}} words</mat-label>
+        <button mat-button matStepperNext [disabled]="wordCount < 50" (click)="onEndFirst()">Next</button>
+    </mat-step>
+    <!-- Add more steps as needed -->
+    <mat-step label ="Choose the mood that best describes how you feel today">
+        <mat-chip-listbox>
+            <mat-chip-option>😁 Great</mat-chip-option>
+            <mat-chip-option>🙂 Good</mat-chip-option>
+            <mat-chip-option selected="true">🙃 Ok</mat-chip-option>
+            <mat-chip-option>😔 Sad</mat-chip-option>
+            <mat-chip-option>😡 Angry</mat-chip-option>
+            <mat-chip-option>😰 Anxious</mat-chip-option>
+          </mat-chip-listbox>
+          <button mat-button matStepperNext>Next</button>
+          <button mat-button matStepperPrevious>Previous</button>
+    </mat-step>
+    <mat-step label ="Ready to save today's entry?">
+        <button mat-raised-button color="primary">Submit</button>
+        <button mat-button matStepperPrevious>Previous</button>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>
