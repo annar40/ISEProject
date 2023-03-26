@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -19,6 +20,11 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+type Entry struct {
+	JournalEntry string `json:"journalEntry"`
+}
+
+var currentUser string
 
 var ctx = context.Background()
 
@@ -49,6 +55,8 @@ func main() {
 	// Attach login handler to HTTP server
 	http.Handle("/login", c.Handler(http.HandlerFunc(loginHandler(client))))
 
+	http.Handle("/journalEntry", c.Handler(http.HandlerFunc(journalHandler(client))))
+
 	// Start HTTP server
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
@@ -64,7 +72,7 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 		// Write user data to Firestore
 		_, err := client.Collection("users").Doc(user.Name).Set(ctx, map[string]interface{}{
 
-			"name": user.Name,
+			"name":     user.Name,
 			"email":    user.Email,
 			"password": user.Password,
 		})
@@ -110,5 +118,37 @@ func loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.
 		// Send success response
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Login Successful")
+		currentUser = user.Name
+	}
+}
+
+func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Parse form data
+		var entry Entry
+		if err := json.NewDecoder(r.Body).Decode(&entry); err != nil {
+			http.Error(w, "error parsing form data", http.StatusBadRequest)
+			return
+		}
+		now := time.Now()
+		dateStr := now.Format("2006-01-02") // Format the current date as "yyyy-mm-dd"
+
+		// Write user data to Firestore
+		_, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
+
+			"journalEntry": entry.JournalEntry,
+		})
+		if err != nil {
+			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
+			return
+		}
+		if err != nil {
+			http.Error(w, "error writing entry data to Firestore", http.StatusInternalServerError)
+			return
+		}
+
+		// Send success response
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "Entry data written to Firestore")
 	}
 }
