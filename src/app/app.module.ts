@@ -20,6 +20,11 @@ import { AboutPageComponent } from './about-page/about-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { TextboxPageComponent } from './textbox-page/textbox-page.component';
+import { EntryPageComponent } from './entry-page/entry-page.component';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatLegacyChipsModule} from '@angular/material/legacy-chips';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatChipsModule} from '@angular/material/chips';
 
 
 @NgModule({
@@ -30,7 +35,8 @@ import { TextboxPageComponent } from './textbox-page/textbox-page.component';
     MainNavbarComponent,
     HomePageComponent,
     AboutPageComponent,
-    TextboxPageComponent
+    TextboxPageComponent,
+    EntryPageComponent,
   ],
   imports: [
     FormsModule,
@@ -45,7 +51,11 @@ import { TextboxPageComponent } from './textbox-page/textbox-page.component';
     MatCardModule,
     MatToolbarModule,
     FlexLayoutModule,
-    MatIconModule
+    MatIconModule,
+    MatStepperModule,
+    MatLegacyChipsModule,
+    MatSnackBarModule,
+    MatChipsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
