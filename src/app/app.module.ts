@@ -20,6 +20,9 @@ import { AboutPageComponent } from './about-page/about-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { TextboxPageComponent } from './textbox-page/textbox-page.component';
+import { HistoryPageComponent } from './history-page/history-page.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -30,7 +33,8 @@ import { TextboxPageComponent } from './textbox-page/textbox-page.component';
     MainNavbarComponent,
     HomePageComponent,
     AboutPageComponent,
-    TextboxPageComponent
+    TextboxPageComponent,
+    HistoryPageComponent
   ],
   imports: [
     FormsModule,
@@ -45,7 +49,9 @@ import { TextboxPageComponent } from './textbox-page/textbox-page.component';
     MatCardModule,
     MatToolbarModule,
     FlexLayoutModule,
-    MatIconModule
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -6,6 +6,8 @@ import { MainNavbarComponent } from './main-navbar/main-navbar.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
 import { TextboxPageComponent } from './textbox-page/textbox-page.component';
+import { HistoryPageComponent } from './history-page/history-page.component';
+
 
 
 export const routes: Routes = [
@@ -14,6 +16,7 @@ export const routes: Routes = [
   {path:'about', component:AboutPageComponent},
   {path:'sign-up', component:SignupPageComponent},
   {path:'journal', component:TextboxPageComponent},
+  {path: 'history', component:HistoryPageComponent},
   {path:'', redirectTo:'/home', pathMatch:'full'},
 ];
 
