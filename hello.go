@@ -25,7 +25,7 @@ type Entry struct {
 }
 
 type Date struct {
-	DateSelected string `json:"dateSelected"`
+	DateSelected time.Time `json:"dateSelected"`
 }
 
 var currentUser string
@@ -163,15 +163,17 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 
 func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		var date Date
 		if err := json.NewDecoder(r.Body).Decode(&date); err != nil {
 			http.Error(w, "error parsing form data", http.StatusBadRequest)
 			return
 		}
+		// Print the date
+		fmt.Printf("Date selected: %v\n", date.DateSelected.Format(time.RFC3339))
 
 		// Get document with provided name
-		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected)
+		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected.Format("2006-01-02"))
+
 		// Get the data from the document
 		docData, err := docRef.Get(ctx)
 		if err != nil {
