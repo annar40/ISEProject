@@ -24,6 +24,10 @@ type Entry struct {
 	JournalEntry string `json:"journalEntry"`
 }
 
+type Date struct {
+	DateSelected string `json:"dateSelected"`
+}
+
 var currentUser string
 
 var ctx = context.Background()
@@ -160,11 +164,14 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		//temporary hardcoded date ---will have to get date from user-- new func parameter??
-		testDate := "2023-03-26"
+		var date Date
+		if err := json.NewDecoder(r.Body).Decode(&date); err != nil {
+			http.Error(w, "error parsing form data", http.StatusBadRequest)
+			return
+		}
 
 		// Get document with provided name
-		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(testDate)
+		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected)
 		// Get the data from the document
 		docData, err := docRef.Get(ctx)
 		if err != nil {
