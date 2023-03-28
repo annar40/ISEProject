@@ -190,7 +190,7 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		fmt.Printf("Journal Entry: %s\n", journalEntry)
 
 		// Send success response
-		// w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "entry retrieved")
 	}
 }
