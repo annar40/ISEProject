@@ -22,12 +22,14 @@ export class HistoryPageComponent {
   submitDate(){
     if(this.selected){
       //a date is selected do something, submit logic here
-      console.log(this.selected);
-
-      const selectedDate = { date: this.selected.toISOString().slice(0, 10) };
-
+      const selectedDate = {
+        date: this.selected.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit'} )
+      };
+      
+      const dateJson = JSON.stringify( selectedDate);
+      console.log(dateJson);
       this.httpClient
-        .post('http://localhost:8000/retrieveEntry', selectedDate)
+        .post('http://localhost:8000/retrieveEntry', dateJson)
         .subscribe(
           (response) => {
             console.log('response', response);

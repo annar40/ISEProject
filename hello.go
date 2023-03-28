@@ -25,7 +25,7 @@ type Entry struct {
 }
 
 type Date struct {
-	DateSelected time.Time `json:"dateSelected"`
+	DateSelected string `json:"date"`
 }
 
 var currentUser string
@@ -169,10 +169,10 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			return
 		}
 		// Print the date
-		fmt.Printf("Date selected: %v\n", date.DateSelected.Format(time.RFC3339))
+		fmt.Printf("Date selected: %v\n", date.DateSelected)
 
 		// Get document with provided name
-		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected.Format("2006-01-02"))
+		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected)
 
 		// Get the data from the document
 		docData, err := docRef.Get(ctx)
