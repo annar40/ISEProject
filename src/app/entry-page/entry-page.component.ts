@@ -35,7 +35,6 @@ export class EntryPageComponent {
 
   }
 
-
   
   journalEntry: string = '';
 
