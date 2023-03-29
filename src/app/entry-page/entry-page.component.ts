@@ -37,7 +37,7 @@ export class EntryPageComponent {
 
 
   
-  journalEntry: string = '';
+  
 
 
   ngOnInit(): void {}
@@ -46,7 +46,7 @@ export class EntryPageComponent {
     const requestBody = { text: this.text };
     console.log(requestBody);
 
-    this.httpClient.post('http://localhost:8000/journalEntry', JSON.stringify(requestBody), { headers: { 'Content-Type': 'application/json' } })
+    this.httpClient.post('http://localhost:8000/journalEntry', JSON.stringify(requestBody))
       .subscribe(
         (response) => {
           console.log('response', response);
@@ -58,7 +58,7 @@ export class EntryPageComponent {
           if (error.status === 200) {
             
             console.log('Journal Entry Stored');
-            this.router.navigate(['../', 'journal'], {
+            this.router.navigate(['../', 'entry'], {
               relativeTo: this.activatedRoute,
             });
           }

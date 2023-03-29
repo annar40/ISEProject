@@ -21,7 +21,7 @@ type User struct {
 	Password string `json:"password"`
 }
 type Entry struct {
-	JournalEntry string `json:"journalEntry"`
+	JournalEntry string `json:"text"`
 }
 
 var currentUser string
@@ -130,6 +130,7 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 			http.Error(w, "error parsing form data", http.StatusBadRequest)
 			return
 		}
+
 		now := time.Now()
 		dateStr := now.Format("2006-01-02") // Format the current date as "yyyy-mm-dd"
 
