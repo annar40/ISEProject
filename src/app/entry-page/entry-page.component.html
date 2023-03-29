@@ -12,16 +12,16 @@
     </mat-step>
     <!-- Add more steps as needed -->
     <mat-step label ="Choose the mood that best describes how you feel today">
-        <mat-chip-listbox>
-            <mat-chip-option>😁 Great</mat-chip-option>
-            <mat-chip-option>🙂 Good</mat-chip-option>
-            <mat-chip-option selected="true">🙃 Ok</mat-chip-option>
-            <mat-chip-option>😔 Sad</mat-chip-option>
-            <mat-chip-option>😡 Angry</mat-chip-option>
-            <mat-chip-option>😰 Anxious</mat-chip-option>
-          </mat-chip-listbox>
-          <button mat-button matStepperNext>Next</button>
-          <button mat-button matStepperPrevious>Previous</button>
+      <mat-chip-listbox [(ngModel)]="mood">
+        <mat-chip-option>😁 Great</mat-chip-option>
+        <mat-chip-option>🙂 Good</mat-chip-option>
+        <mat-chip-option [selected]="true">🙃 Ok</mat-chip-option>
+        <mat-chip-option>😔 Sad</mat-chip-option>
+        <mat-chip-option>😡 Angry</mat-chip-option>
+        <mat-chip-option>😰 Anxious</mat-chip-option>
+      </mat-chip-listbox>
+      <button mat-button matStepperNext>Next</button>
+      <button mat-button matStepperPrevious>Previous</button>
     </mat-step>
     <mat-step label ="Ready to save today's entry?">
         <button mat-raised-button color="primary"(click)="onSubmit()">Submit</button>

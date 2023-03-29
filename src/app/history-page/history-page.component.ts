@@ -4,7 +4,6 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-history-page',
   templateUrl: './history-page.component.html',
@@ -12,6 +11,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 })
 export class HistoryPageComponent {
   selected!: Date | null;
+  journalEntry: any; // variable to store the journal entry response
 
   constructor(
     private router: Router,
@@ -19,34 +19,34 @@ export class HistoryPageComponent {
     private activatedRoute: ActivatedRoute
   ) {}
 
-  submitDate(){
-    if(this.selected){
-      //a date is selected do something, submit logic here
+  submitDate() {
+    if (this.selected) {
       const selectedDate = {
-        date: this.selected.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit'} )
+        date: this.selected.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })
       };
       
-      const dateJson = JSON.stringify( selectedDate);
+      const dateJson = JSON.stringify(selectedDate);
       console.log(dateJson);
+
       this.httpClient
         .post('http://localhost:8000/retrieveEntry', dateJson)
         .subscribe(
           (response) => {
             console.log('response', response);
+            this.journalEntry = response; // store the response in the variable
           },
           (error: HttpErrorResponse) => {
             console.log('HTTP error status:', error.status);
             // only redirect if the error status is not 200 OK
             if (error.status === 200) {
               console.log('Journal Entry Retrieved');
-              this.router.navigate(['../', 'journal'], {
+              this.router.navigate(['../', 'entry'], {
                 relativeTo: this.activatedRoute,
               });
             }
           }
         );
-    }
-    else{
+    } else {
       //a date isn't selected
     }
   }
