@@ -21,7 +21,7 @@ type User struct {
 	Password string `json:"password"`
 }
 type Entry struct {
-	JournalEntry string `json:"journalEntry"`
+	JournalEntry string `json:"text"`
 }
 
 var currentUser string

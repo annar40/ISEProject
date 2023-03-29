@@ -24,7 +24,7 @@
           <button mat-button matStepperPrevious>Previous</button>
     </mat-step>
     <mat-step label ="Ready to save today's entry?">
-        <button mat-raised-button color="primary">Submit</button>
+        <button mat-raised-button color="primary"(click)="onSubmit()">Submit</button>
         <button mat-button matStepperPrevious>Previous</button>
     </mat-step>
   </mat-vertical-stepper>
