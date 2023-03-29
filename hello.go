@@ -22,6 +22,7 @@ type User struct {
 }
 type Entry struct {
 	JournalEntry string `json:"text"`
+	Mood         string `json:"mood"`
 }
 
 type Date struct {
@@ -149,6 +150,7 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 		_, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
 
 			"journalEntry": entry.JournalEntry,
+			"mood":         entry.Mood,
 		})
 		if err != nil {
 			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)

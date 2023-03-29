@@ -23,6 +23,7 @@ export class EntryPageComponent {
     private activatedRoute: ActivatedRoute) { }
   text: string = '';
   wordCount: number = 0;
+  mood: string = '🙃 Ok';
 
   updateWordCount() {
     this.wordCount = this.text.trim().split(' ').length;
@@ -31,19 +32,12 @@ export class EntryPageComponent {
     this.firstStep.completed = true;
     this.Stepper.next();
     this.snackBar.open('Your journal entry was logged! Now choose a mood for the day', 'Ok', { duration: 3000 })
-
-
   }
-
-
-  
-  journalEntry: string = '';
-
 
   ngOnInit(): void {}
 
   onSubmit() {
-    const requestBody = { text: this.text };
+    const requestBody = { text: this.text, mood: this.mood };
     console.log(requestBody);
 
     this.httpClient.post('http://localhost:8000/journalEntry', JSON.stringify(requestBody))
@@ -64,6 +58,5 @@ export class EntryPageComponent {
           }
         }
       );
-  }
-  
+  } 
 }
