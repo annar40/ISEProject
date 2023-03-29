@@ -56,6 +56,7 @@ import {MatChipsModule} from '@angular/material/chips';
     MatLegacyChipsModule,
     MatSnackBarModule,
     MatChipsModule,
+  
   ],
   providers: [],
   bootstrap: [AppComponent]
