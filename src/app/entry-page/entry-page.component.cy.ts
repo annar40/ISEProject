@@ -62,5 +62,6 @@ describe('EntryPageComponent', () => {
     const nextButton = fixture.nativeElement.querySelector('#nextButton');
     expect(nextButton.disabled).equal(false);
   });
+  
 
 });
