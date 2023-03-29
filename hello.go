@@ -22,10 +22,16 @@ type User struct {
 }
 type Entry struct {
 	JournalEntry string `json:"text"`
+	Mood         string `json:"mood"`
 }
 
 type Date struct {
 	DateSelected string `json:"date"`
+}
+type JournalEntry struct {
+	DateSelected string `json:"dateSelected"`
+	Entry        string `json:"entry"`
+	Mood         string `json:"mood"`
 }
 
 var currentUser string
@@ -145,6 +151,7 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 		_, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
 
 			"journalEntry": entry.JournalEntry,
+			"mood":         entry.Mood,
 		})
 		if err != nil {
 			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
@@ -186,11 +193,27 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			log.Fatalf("Document does not have 'journalEntry' field")
 		}
 
-		// Print the journal entry
-		fmt.Printf("Journal Entry: %s\n", journalEntry)
+		moodEntry, exists := docData.Data()["mood"]
+		if !exists {
+			log.Fatalf("Document does not have 'journalEntry' field")
+		}
 
-		// Send success response
+		// Create JournalEntry struct
+		entry := JournalEntry{
+			DateSelected: date.DateSelected,
+			Entry:        journalEntry.(string),
+			Mood:         moodEntry.(string),
+		}
+
+		// Marshal JournalEntry struct as JSON
+		jsonResponse, err := json.Marshal(entry)
+		if err != nil {
+			log.Fatalf("Failed to marshal JSON: %v", err)
+		}
+
+		// Send success response with JSON data
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "entry retrieved")
+		w.Write(jsonResponse)
 	}
 }

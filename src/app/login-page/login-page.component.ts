@@ -49,7 +49,7 @@ export class LoginPageComponent{
           if (error.status === 200) {
             this.loginForm.reset();
             console.log('Signup Successful');
-            this.router.navigate(['../', 'journal'], {
+            this.router.navigate(['../', 'entry'], {
               relativeTo: this.activatedRoute,
 
             });
