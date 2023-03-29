@@ -20,11 +20,17 @@ import { AboutPageComponent } from './about-page/about-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { TextboxPageComponent } from './textbox-page/textbox-page.component';
+
+import { HistoryPageComponent } from './history-page/history-page.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
 import { EntryPageComponent } from './entry-page/entry-page.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatLegacyChipsModule} from '@angular/material/legacy-chips';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatChipsModule} from '@angular/material/chips';
+
 
 
 @NgModule({
@@ -36,6 +42,8 @@ import {MatChipsModule} from '@angular/material/chips';
     HomePageComponent,
     AboutPageComponent,
     TextboxPageComponent,
+
+    HistoryPageComponent
     EntryPageComponent,
   ],
   imports: [
@@ -52,11 +60,15 @@ import {MatChipsModule} from '@angular/material/chips';
     MatToolbarModule,
     FlexLayoutModule,
     MatIconModule,
+
+    MatDatepickerModule,
+    MatNativeDateModule,
+
     MatStepperModule,
     MatLegacyChipsModule,
     MatSnackBarModule,
     MatChipsModule,
-  
+
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -21,7 +21,11 @@ type User struct {
 	Password string `json:"password"`
 }
 type Entry struct {
-	JournalEntry string `json:"journalEntry"`
+	JournalEntry string `json:"text"`
+}
+
+type Date struct {
+	DateSelected string `json:"date"`
 }
 
 var currentUser string
@@ -55,7 +59,11 @@ func main() {
 	// Attach login handler to HTTP server
 	http.Handle("/login", c.Handler(http.HandlerFunc(loginHandler(client))))
 
+	// Attach journal handler to HTTP server
 	http.Handle("/journalEntry", c.Handler(http.HandlerFunc(journalHandler(client))))
+
+	// Attach entry retriever handler to HTTP server
+	http.Handle("/retrieveEntry", c.Handler(http.HandlerFunc(retrieveEntryHandler(client))))
 
 	// Start HTTP server
 	log.Fatal(http.ListenAndServe(":8000", nil))
@@ -150,5 +158,39 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 		// Send success response
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Entry data written to Firestore")
+	}
+}
+
+func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var date Date
+		if err := json.NewDecoder(r.Body).Decode(&date); err != nil {
+			http.Error(w, "error parsing form data", http.StatusBadRequest)
+			return
+		}
+		// Print the date
+		fmt.Printf("Date selected: %v\n", date.DateSelected)
+
+		// Get document with provided name
+		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected)
+
+		// Get the data from the document
+		docData, err := docRef.Get(ctx)
+		if err != nil {
+			log.Fatalf("Failed to get journal entry: %v", err)
+		}
+
+		// Get the "journalEntry" field from the document data
+		journalEntry, exists := docData.Data()["journalEntry"]
+		if !exists {
+			log.Fatalf("Document does not have 'journalEntry' field")
+		}
+
+		// Print the journal entry
+		fmt.Printf("Journal Entry: %s\n", journalEntry)
+
+		// Send success response
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "entry retrieved")
 	}
 }
