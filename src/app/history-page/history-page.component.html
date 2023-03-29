@@ -10,8 +10,13 @@
   <mat-card>
     <mat-card-header>
       <mat-card-title>Journal Entry</mat-card-title>
-      <mat-card-subtitle>{{ journalEntry.dateSelected | date: 'mediumDate' }}</mat-card-subtitle>
+      <mat-card-subtitle>
+        {{ journalEntry.dateSelected | date: 'mediumDate' }}
+      </mat-card-subtitle>
     </mat-card-header>
+    <mat-card-content>       
+      <p><strong>Mood:</strong> {{ journalEntry.mood }}</p>
+    </mat-card-content>
     <mat-card-content>
       <p>{{ journalEntry.entry }}</p>
     </mat-card-content>

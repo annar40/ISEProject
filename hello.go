@@ -31,6 +31,7 @@ type Date struct {
 type JournalEntry struct {
 	DateSelected string `json:"dateSelected"`
 	Entry        string `json:"entry"`
+	Mood         string `json:"mood"`
 }
 
 var currentUser string
@@ -192,10 +193,16 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			log.Fatalf("Document does not have 'journalEntry' field")
 		}
 
+		moodEntry, exists := docData.Data()["mood"]
+		if !exists {
+			log.Fatalf("Document does not have 'journalEntry' field")
+		}
+
 		// Create JournalEntry struct
 		entry := JournalEntry{
 			DateSelected: date.DateSelected,
 			Entry:        journalEntry.(string),
+			Mood:         moodEntry.(string),
 		}
 
 		// Marshal JournalEntry struct as JSON
