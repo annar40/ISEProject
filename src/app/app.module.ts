@@ -43,7 +43,7 @@ import {MatChipsModule} from '@angular/material/chips';
     AboutPageComponent,
     TextboxPageComponent,
 
-    HistoryPageComponent
+    HistoryPageComponent,
     EntryPageComponent,
   ],
   imports: [
