@@ -8,7 +8,7 @@
           <textarea class="text-box" placeholder="What's on your mind?..." wrap="soft" [(ngModel)]="text" (keyup)="updateWordCount()"></textarea>
         </div>
         <mat-label>{{wordCount}} words</mat-label>
-        <button mat-button matStepperNext [disabled]="wordCount < 50" (click)="onEndFirst()">Next</button>
+        <button id="nextButton" mat-button matStepperNext [disabled]="wordCount < 50" (click)="onEndFirst()">Next</button>
     </mat-step>
     <!-- Add more steps as needed -->
     <mat-step label ="Choose the mood that best describes how you feel today">
