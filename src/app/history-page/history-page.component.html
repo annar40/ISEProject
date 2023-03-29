@@ -1,5 +1,19 @@
 <mat-card class="demo-inline-calendar-card">
-    <mat-calendar [(selected)]="selected"></mat-calendar>
+  <mat-calendar [(selected)]="selected"></mat-calendar>
+</mat-card>
+
+<p>Selected date: {{selected}}</p>
+
+<button mat-raised-button color="primary" (click)="submitDate()">Submit selection</button>
+
+<div *ngIf="journalEntry" class="journal-entry">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Journal Entry</mat-card-title>
+      <mat-card-subtitle>{{ journalEntry.dateSelected | date: 'mediumDate' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ journalEntry.entry }}</p>
+    </mat-card-content>
   </mat-card>
-  <p>Selected date: {{selected}}</p>
-  <button (click)="submitDate()">Submit selection</button>
+</div>

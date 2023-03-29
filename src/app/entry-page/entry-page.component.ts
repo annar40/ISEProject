@@ -58,7 +58,7 @@ export class EntryPageComponent {
           if (error.status === 200) {
             
             console.log('Journal Entry Stored');
-            this.router.navigate(['../', 'entry'], {
+            this.router.navigate(['../', 'history'], {
               relativeTo: this.activatedRoute,
             });
           }

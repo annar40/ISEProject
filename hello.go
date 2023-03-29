@@ -27,6 +27,10 @@ type Entry struct {
 type Date struct {
 	DateSelected string `json:"date"`
 }
+type JournalEntry struct {
+	DateSelected string `json:"dateSelected"`
+	Entry        string `json:"entry"`
+}
 
 var currentUser string
 
@@ -186,11 +190,21 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			log.Fatalf("Document does not have 'journalEntry' field")
 		}
 
-		// Print the journal entry
-		fmt.Printf("Journal Entry: %s\n", journalEntry)
+		// Create JournalEntry struct
+		entry := JournalEntry{
+			DateSelected: date.DateSelected,
+			Entry:        journalEntry.(string),
+		}
 
-		// Send success response
+		// Marshal JournalEntry struct as JSON
+		jsonResponse, err := json.Marshal(entry)
+		if err != nil {
+			log.Fatalf("Failed to marshal JSON: %v", err)
+		}
+
+		// Send success response with JSON data
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "entry retrieved")
+		w.Write(jsonResponse)
 	}
 }
