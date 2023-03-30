@@ -28,7 +28,7 @@ link goes here
 ## Backend unit tests
 func TestJournalHandler(t *testing.T) : logs into existing account. Writes an entry. Stores entry under that user. 
 
-func TestEntryRetrieverHandler() :blah blah to be written
+func TestEntryRetrieverHandler() : Logs into existing account. Writes an entry. Stores entry under that user. Provides date for entry retrieval. Retrieves entry from that date.
 
 ## **Updated API Documentation:**
 
