@@ -1,6 +1,6 @@
 
 ## Video
-link goes here
+https://www.youtube.com/watch?v=vtQERJN-go0
 
 
 ## Work Completed in Sprint 3
@@ -23,7 +23,9 @@ link goes here
 -store user mood
 ## Front end work completed details
 - Added modified journal entry page. This made us of an angular material stepper, with the first step being a stylized textarea where users can enter their journal entry for the day. As of now, we have a minimum word count of 500 for the entry section. A wordcount function updates and displays the user's wordcount as they type, and the stepper and the next button for the first step are disabled when the word count is less than 500. For demonstration purposes we have the minimum wordcount set to 50. When the user successfully submits their entry after the first step, a time-sensitive snackbar alerting them to choose a mood in the next step is displayed. The second step of the stepper is the "mood selection" step, where the user chooses between 5 "moods" that describe their day. The third step acts as reassurance for the user to submit their data, and on its button's click, the text entry and mood is sent to the backend.
+
 -Added journal history page, which makes use of a calendar element to retrieve the logged-in user's entry from a date they select on the datepicker. The user can navigate dates using the calendar and display the text entry below for that day if there is one in the database. This also displays the chosen mood for that day.
+
 -Moving forward, we hope to use the "mood" data to display the user's mood over time, possibly in graphs or charts. We also will highlight the dates for which a particular user has entries on the calendar to improve the user experience. 
 
 -Created the general theme & design for the homepage. Gave the website a more branded feel.
