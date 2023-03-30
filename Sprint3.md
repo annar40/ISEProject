@@ -16,6 +16,13 @@ link goes here
 
 -fix unique user bug
 
+-new about page
+
+-new home page
+
+-store user mood
+
+
 ## Frontend unit tests
 
 ## Backend unit tests
