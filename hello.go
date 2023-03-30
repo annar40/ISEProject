@@ -215,6 +215,6 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonResponse)
-		fmt.Fprintf(w, "entry retrieved")
+
 	}
 }
