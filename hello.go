@@ -176,7 +176,7 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			return
 		}
 		// Print the date
-		fmt.Printf("Date selected: %v\n", date.DateSelected)
+		// fmt.Printf("Date selected: %v\n", date.DateSelected)
 
 		// Get document with provided name
 		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected)
@@ -215,5 +215,6 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonResponse)
+		fmt.Fprintf(w, "entry retrieved")
 	}
 }
