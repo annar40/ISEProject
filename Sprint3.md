@@ -1,7 +1,10 @@
 
 ## Video
+video split into 2 parts:
+
 https://www.youtube.com/watch?v=vtQERJN-go0
 
+https://youtu.be/WciKBAtyY5Q
 
 ## Work Completed in Sprint 3 (overview)
 -store journal entries (track logged in user)
