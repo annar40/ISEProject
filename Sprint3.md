@@ -26,6 +26,13 @@ link goes here
 -Added journal history page, which makes use of a calendar element to retrieve the logged-in user's entry from a date they select on the datepicker. The user can navigate dates using the calendar and display the text entry below for that day if there is one in the database. This also displays the chosen mood for that day.
 -Moving forward, we hope to use the "mood" data to display the user's mood over time, possibly in graphs or charts. We also will highlight the dates for which a particular user has entries on the calendar to improve the user experience. 
 
+-Created the general theme & design for the homepage. Gave the website a more branded feel.
+
+-Simplified the concept for the user on the homepage. 
+
+-Explained approaches users can take when writing journal entries.
+
+
 
 
 ## Frontend unit tests
