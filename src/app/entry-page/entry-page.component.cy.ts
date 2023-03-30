@@ -42,7 +42,7 @@ describe('EntryPageComponent', () => {
     expect(nextButton.disabled).equal(true);
   });
 
-  it('should enable the matStepperNext button in the first step when the text is "Hello World, how are you?"', () => {
+  it('should enable the matStepperNext button in the first step when the text is greater than 50 words', () => {
     const textarea = fixture.nativeElement.querySelector('textarea');
     textarea.value = `Florida, our Alma Mater,thy glorious name we praise.
     All thy loyal sons and daughters,
