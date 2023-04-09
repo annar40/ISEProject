@@ -21,3 +21,11 @@ Presentation should include:
 - List frontend unit and Cypress tests
 - List backend unit tests
 - Show updated documentation for your backend API 
+
+# hi team. here's what we are going to accomplish
+- Resolve Calendar bug: Submitting date that does not have an entry stored crashes the backend.
+- Resolve Login bug: When creating an account, if the person uses a username that is already in the data base, it's email and password are overwritten with new account info
+- update the readme on running details
+- streaks?
+- create ui message for failed log in attempt
+- 
