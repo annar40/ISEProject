@@ -71,6 +71,7 @@
           Password is <strong>required</strong>
         </mat-error>
       </mat-form-field>
+      <mat-error *ngIf="usernameTakenError">The username is already taken.</mat-error>
       <button mat-stroked-button type="submit" [disabled]="signupForm.invalid" >Create Account</button>
     </form>
   </mat-card>
