@@ -12,6 +12,8 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/rs/cors"
 	"google.golang.org/api/option"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type User struct {
@@ -82,23 +84,36 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 			http.Error(w, "error parsing form data", http.StatusBadRequest)
 			return
 		}
-
-		// Write user data to Firestore
-		_, err := client.Collection("users").Doc(user.Name).Set(ctx, map[string]interface{}{
-
-			"name":     user.Name,
-			"email":    user.Email,
-			"password": user.Password,
-		})
+		// Check if username is available
+		docRef := client.Collection("users").Doc(user.Name)
+		_, err := docRef.Get(ctx)
 		if err != nil {
-			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
+			if status.Code(err) == codes.NotFound {
+				// Username is available
+				// Write user data to Firestore
+				_, err := client.Collection("users").Doc(user.Name).Set(ctx, map[string]interface{}{
+					"name":     user.Name,
+					"email":    user.Email,
+					"password": user.Password,
+				})
+				if err != nil {
+					http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
+					return
+				}
+
+				// Send success response
+				w.WriteHeader(http.StatusOK)
+				fmt.Fprintf(w, "User data written to Firestore")
+				return
+			} else {
+				http.Error(w, "error checking username availability", http.StatusInternalServerError)
+				return
+			}
+		} else {
+			// Username is already taken
+			http.Error(w, "username already taken", http.StatusConflict)
 			return
 		}
-
-		// Send success response
-		w.WriteHeader(http.StatusOK)
-
-		fmt.Fprintf(w, "User data written to Firestore")
 	}
 }
 func loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
