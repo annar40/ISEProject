@@ -34,6 +34,10 @@ type JournalEntry struct {
 	Mood         string `json:"mood"`
 }
 
+type EntryDate struct {
+	Date string `json:"date"`
+}
+
 var currentUser string
 
 var ctx = context.Background()
@@ -70,6 +74,8 @@ func main() {
 
 	// Attach entry retriever handler to HTTP server
 	http.Handle("/retrieveEntry", c.Handler(http.HandlerFunc(retrieveEntryHandler(client))))
+
+	http.Handle("/retrieveDates", c.Handler(http.HandlerFunc(retrieveDatesHandler(client))))
 
 	// Start HTTP server
 	log.Fatal(http.ListenAndServe(":8000", nil))
@@ -216,5 +222,34 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonResponse)
 
+	}
+}
+
+func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Query Firestore to retrieve all journal entry documents of the current user
+		docs, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Documents(ctx).GetAll()
+		if err != nil {
+			http.Error(w, "error retrieving journal entries", http.StatusInternalServerError)
+			return
+		}
+
+		// Extract IDs of documents, which correspond to dates of journal entries
+		var dates []EntryDate
+		for _, doc := range docs {
+			dates = append(dates, EntryDate{Date: doc.Ref.ID})
+		}
+
+		// Marshal dates into a JSON string
+		jsonBytes, err := json.Marshal(dates)
+		if err != nil {
+			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
+			return
+		}
+		jsonString := string(jsonBytes)
+
+		// Write JSON string to response body
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(jsonString))
 	}
 }

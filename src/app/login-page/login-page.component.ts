@@ -2,7 +2,16 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Injectable } from '@angular/core';
 
+@Injectable()
+export class MyService {
+  constructor(private http: HttpClient) {}
+
+  retrieveDates() {
+    return this.http.get('/retrieveDates');
+  }
+}
 
 @Component({
   selector: 'app-login-page',
@@ -33,14 +42,17 @@ export class LoginPageComponent{
   onSubmit() {
     console.log( this.loginForm.value);
 
-    this.httpClient
-      .post(
+    this.httpClient.post(
         'http://localhost:8000/login',
+        
         this.loginForm.value
       )
       .subscribe(
         (response) => {
           console.log('response', response);
+
+          // Call the new method here
+          
           
         },
         (error: HttpErrorResponse) => {
@@ -48,6 +60,7 @@ export class LoginPageComponent{
           // only redirect if the error status is not 200 OK
           if (error.status === 200) {
             this.loginForm.reset();
+            this.sendNewRequest();
             console.log('Signup Successful');
             this.router.navigate(['../', 'entry'], {
               relativeTo: this.activatedRoute,
@@ -56,7 +69,26 @@ export class LoginPageComponent{
           }
         }
       );
+      
+  }
+
+  // New method to send another POST request
+  sendNewRequest() {
+    this.httpClient.post(
+        'http://localhost:8000/retrieveDates',
+        
+        // Pass any data you want to send in the request body
+        {someData: 'someValue'}
+      )
+      .subscribe(
+        (response) => {
+          console.log('New response', response);
+          
+        },
+        (error: HttpErrorResponse) => {
+          console.log('New HTTP error status:', error.status);
+        }
+      );
   }
 }
-
-
+2
