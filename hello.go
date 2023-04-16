@@ -236,11 +236,19 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			http.Error(w, "error retrieving journal entries", http.StatusInternalServerError)
 			return
 		}
-		//TODO:   Call getYesterday()
 
-		//check is they have an entry from yesterday
+		// Get yesterday's date
+		yesterday := getYesterday()
 
-		//if they do, change boolean to true
+		// Check if the last entry in the array of dates is equal to yesterday's date
+		lastEntry := len(docs) - 1
+		isYesterdayEntry := false
+		if lastEntry >= 0 {
+			lastEntryDate := docs[lastEntry].Ref.ID
+			if lastEntryDate == yesterday {
+				isYesterdayEntry = true
+			}
+		}
 
 		// Extract IDs of documents, which correspond to dates of journal entries
 		var dates []EntryDate
@@ -248,8 +256,14 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			dates = append(dates, EntryDate{Date: doc.Ref.ID})
 		}
 
-		// Marshal dates into a JSON string
-		jsonBytes, err := json.Marshal(dates)
+		// Marshal dates and isYesterdayEntry into a JSON string
+		jsonBytes, err := json.Marshal(struct {
+			Dates            []EntryDate `json:"dates"`
+			IsYesterdayEntry bool        `json:"isYesterdayEntry"`
+		}{
+			Dates:            dates,
+			IsYesterdayEntry: isYesterdayEntry,
+		})
 		if err != nil {
 			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
 			return
@@ -261,6 +275,7 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		w.Write([]byte(jsonString))
 	}
 }
+
 func getYesterday() string {
 	yesterday := time.Now().AddDate(0, 0, -1)
 	yesterdayString := yesterday.Format("2006-01-02")
