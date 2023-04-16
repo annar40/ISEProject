@@ -19,6 +19,7 @@ type User struct {
 	Phone    string `json:"phone"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Streak   int    `json:"streak"`
 }
 type Entry struct {
 	JournalEntry string `json:"text"`
@@ -95,6 +96,7 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 			"name":     user.Name,
 			"email":    user.Email,
 			"password": user.Password,
+			"streak":   0,
 		})
 		if err != nil {
 			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
