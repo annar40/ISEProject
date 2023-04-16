@@ -190,46 +190,44 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			http.Error(w, "error parsing form data", http.StatusBadRequest)
 			return
 		}
-		// Print the date
-		// fmt.Printf("Date selected: %v\n", date.DateSelected)
 
 		// Get document with provided name
 		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected)
-
 		// Get the data from the document
 		docData, err := docRef.Get(ctx)
-		if err != nil {
-			log.Fatalf("Failed to get journal entry: %v", err)
+		if status.Code(err) != codes.NotFound {
+			if err != nil {
+				log.Fatalf("Failed to get journal entry: %v", err)
+			}
+
+			// Get the "journalEntry" field from the document data
+			journalEntry, exists := docData.Data()["journalEntry"]
+			if !exists {
+				log.Fatalf("Document does not have 'journalEntry' field")
+			}
+
+			moodEntry, exists := docData.Data()["mood"]
+			if !exists {
+				log.Fatalf("Document does not have 'journalEntry' field")
+			}
+
+			// Create JournalEntry struct
+			entry := JournalEntry{
+				DateSelected: date.DateSelected,
+				Entry:        journalEntry.(string),
+				Mood:         moodEntry.(string),
+			}
+
+			// Marshal JournalEntry struct as JSON
+			jsonResponse, err := json.Marshal(entry)
+			if err != nil {
+				log.Fatalf("Failed to marshal JSON: %v", err)
+			}
+
+			// Send success response with JSON data
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(jsonResponse)
 		}
-
-		// Get the "journalEntry" field from the document data
-		journalEntry, exists := docData.Data()["journalEntry"]
-		if !exists {
-			log.Fatalf("Document does not have 'journalEntry' field")
-		}
-
-		moodEntry, exists := docData.Data()["mood"]
-		if !exists {
-			log.Fatalf("Document does not have 'journalEntry' field")
-		}
-
-		// Create JournalEntry struct
-		entry := JournalEntry{
-			DateSelected: date.DateSelected,
-			Entry:        journalEntry.(string),
-			Mood:         moodEntry.(string),
-		}
-
-		// Marshal JournalEntry struct as JSON
-		jsonResponse, err := json.Marshal(entry)
-		if err != nil {
-			log.Fatalf("Failed to marshal JSON: %v", err)
-		}
-
-		// Send success response with JSON data
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(jsonResponse)
-
 	}
 }

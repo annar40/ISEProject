@@ -66,7 +66,7 @@ func TestLoginHandler(t *testing.T) {
 
 func TestSignupHandler(t *testing.T) {
 	// Create a new request with a JSON body
-	user := User{Name: "john", Email: "john@example.com", Password: "password123"}
+	user := User{Name: "johnny", Email: "john@example.com", Password: "password123"}
 	jsonBody, _ := json.Marshal(user)
 	req, _ := http.NewRequest("POST", "/signup", bytes.NewReader(jsonBody))
 
@@ -113,6 +113,55 @@ func TestSignupHandler(t *testing.T) {
 	}
 	if userData.Email != user.Email || userData.Password != user.Password {
 		t.Errorf("user not added to Firestore correctly: got %v, want %v", userData, user)
+	}
+}
+
+func TestForDuplicateUsers(t *testing.T) {
+	// Create a new request with a JSON body
+	user := User{Name: "johnny", Email: "test@example.com", Password: "password"}
+	jsonBody, _ := json.Marshal(user)
+	req, _ := http.NewRequest("POST", "/signup", bytes.NewReader(jsonBody))
+
+	// Create a new recorder for capturing the response
+	rr := httptest.NewRecorder()
+
+	// Initialize Firebase app and create Firestore client
+	ctx := context.Background()
+	config := &firebase.Config{ProjectID: "thoughtdump-4b31d"}
+	opt := option.WithCredentialsFile("./serviceAccountKey.json")
+	app, err := firebase.NewApp(ctx, config, opt)
+	if err != nil {
+		t.Fatalf("error initializing app: %v", err)
+	}
+	client, err := app.Firestore(ctx)
+	if err != nil {
+		t.Fatalf("error creating Firestore client: %v", err)
+	}
+	defer client.Close()
+
+	// Call the signup handler
+	handler := http.HandlerFunc(signupHandler(client))
+	c := cors.Default().Handler(handler)
+	c.ServeHTTP(rr, req)
+
+	// Check that the response is as expected
+	if status := rr.Code; status != http.StatusConflict {
+		t.Errorf("handler returned wrong status code: got %v, want %v", status, http.StatusConflict)
+	}
+	expected := "username already taken"
+	if !strings.Contains(rr.Body.String(), expected) {
+		t.Errorf("handler returned unexpected body: got %v, want %v", rr.Body.String(), expected)
+	}
+
+	// Check that the user was actually added to the database
+	docRef := client.Collection("users").Doc(user.Name)
+	docSnap, err := docRef.Get(ctx)
+	if err != nil {
+		t.Fatalf("error getting user data from Firestore: %v", err)
+	}
+	var userData User
+	if err := docSnap.DataTo(&userData); err != nil {
+		t.Fatalf("error parsing user data from Firestore: %v", err)
 	}
 }
 func TestJournalHandler(t *testing.T) {
@@ -263,5 +312,18 @@ func TestRetrieveEntryHandler(t *testing.T) {
 	expected3 := "{\"dateSelected\":\"2023-03-29\",\"entry\":\"Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test Test test test test tes test test test test test test test test test test test test  Test test test test tes test test test DONE\",\"mood\":\"😁 Great\"}"
 	if rr3.Body.String() != expected3 {
 		t.Errorf("handler returned unexpected body: got %v, want %v", rr3.Body.String(), expected3)
+	}
+
+	//clicking a date that does not have an entry should return null
+	dateSelected = Date{DateSelected: "2023-01-29"}
+	// Call the journal handler
+	retrieveEntryhandler = http.HandlerFunc(retrieveEntryHandler(client))
+	c3 = cors.Default().Handler(retrieveEntryhandler)
+	c3.ServeHTTP(rr3, req3)
+	// Create a new recorder for capturing the response of entry
+	rr3 = httptest.NewRecorder()
+	expected4 := ""
+	if rr3.Body.String() != expected4 {
+		t.Errorf("handler returned unexpected body: got %v, want %v", rr3.Body.String(), expected4)
 	}
 }
