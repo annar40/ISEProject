@@ -12,6 +12,8 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/rs/cors"
 	"google.golang.org/api/option"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type User struct {
@@ -95,23 +97,38 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 			return
 		}
 
-		// Write user data to Firestore
-		_, err := client.Collection("users").Doc(user.Name).Set(ctx, map[string]interface{}{
+		// Check if username is available
+		docRef := client.Collection("users").Doc(user.Name)
+		_, err := docRef.Get(ctx)
 
-			"name":     user.Name,
-			"email":    user.Email,
-			"password": user.Password,
-			"streak":   0,
-		})
 		if err != nil {
-			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
+			if status.Code(err) == codes.NotFound {
+				// Username is available
+				// Write user data to Firestore
+				_, err := client.Collection("users").Doc(user.Name).Set(ctx, map[string]interface{}{
+					"name":     user.Name,
+					"email":    user.Email,
+					"password": user.Password,
+          "streak":   0,
+				})
+				if err != nil {
+					http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
+					return
+				}
+
+				// Send success response
+				w.WriteHeader(http.StatusOK)
+				fmt.Fprintf(w, "User data written to Firestore")
+				return
+			} else {
+				http.Error(w, "error checking username availability", http.StatusInternalServerError)
+				return
+			}
+		} else {
+			// Username is already taken
+			http.Error(w, "username already taken", http.StatusConflict)
 			return
 		}
-
-		// Send success response
-		w.WriteHeader(http.StatusOK)
-
-		fmt.Fprintf(w, "User data written to Firestore")
 	}
 }
 func loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
@@ -218,47 +235,45 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			http.Error(w, "error parsing form data", http.StatusBadRequest)
 			return
 		}
-		// Print the date
-		// fmt.Printf("Date selected: %v\n", date.DateSelected)
 
 		// Get document with provided name
 		docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.DateSelected)
-
 		// Get the data from the document
 		docData, err := docRef.Get(ctx)
-		if err != nil {
-			log.Fatalf("Failed to get journal entry: %v", err)
+		if status.Code(err) != codes.NotFound {
+			if err != nil {
+				log.Fatalf("Failed to get journal entry: %v", err)
+			}
+
+			// Get the "journalEntry" field from the document data
+			journalEntry, exists := docData.Data()["journalEntry"]
+			if !exists {
+				log.Fatalf("Document does not have 'journalEntry' field")
+			}
+
+			moodEntry, exists := docData.Data()["mood"]
+			if !exists {
+				log.Fatalf("Document does not have 'journalEntry' field")
+			}
+
+			// Create JournalEntry struct
+			entry := JournalEntry{
+				DateSelected: date.DateSelected,
+				Entry:        journalEntry.(string),
+				Mood:         moodEntry.(string),
+			}
+
+			// Marshal JournalEntry struct as JSON
+			jsonResponse, err := json.Marshal(entry)
+			if err != nil {
+				log.Fatalf("Failed to marshal JSON: %v", err)
+			}
+
+			// Send success response with JSON data
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(jsonResponse)
 		}
-
-		// Get the "journalEntry" field from the document data
-		journalEntry, exists := docData.Data()["journalEntry"]
-		if !exists {
-			log.Fatalf("Document does not have 'journalEntry' field")
-		}
-
-		moodEntry, exists := docData.Data()["mood"]
-		if !exists {
-			log.Fatalf("Document does not have 'journalEntry' field")
-		}
-
-		// Create JournalEntry struct
-		entry := JournalEntry{
-			DateSelected: date.DateSelected,
-			Entry:        journalEntry.(string),
-			Mood:         moodEntry.(string),
-		}
-
-		// Marshal JournalEntry struct as JSON
-		jsonResponse, err := json.Marshal(entry)
-		if err != nil {
-			log.Fatalf("Failed to marshal JSON: %v", err)
-		}
-
-		// Send success response with JSON data
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(jsonResponse)
-
 	}
 }
 

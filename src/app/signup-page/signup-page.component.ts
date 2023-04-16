@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./signup-page.component.css']
 })
 export class SignupPageComponent {
+  usernameTakenError = false;
   signupForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -35,11 +36,6 @@ export class SignupPageComponent {
       .subscribe(
         (response) => {
           console.log('response', response);
-          // only do something if response is successful
-          // if (response.status === 'ok') {
-          //   this.signupForm.reset();
-          //   console.log('Signup successful');
-          // }
         },
         (error: HttpErrorResponse) => {
           console.log('HTTP error status:', error.status);
@@ -50,6 +46,11 @@ export class SignupPageComponent {
             this.router.navigate(['../', 'login'], {
               relativeTo: this.activatedRoute,
             });
+          }
+          else if(error.status === 409)
+          {
+            //user name already taken
+            this.usernameTakenError = true;
           }
         }
       );
