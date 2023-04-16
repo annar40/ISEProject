@@ -19,6 +19,7 @@ type User struct {
 	Phone    string `json:"phone"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Streak   int    `json:"streak"`
 }
 type Entry struct {
 	JournalEntry string `json:"text"`
@@ -34,7 +35,16 @@ type JournalEntry struct {
 	Mood         string `json:"mood"`
 }
 
+type EntryDate struct {
+	Date string `json:"date"`
+}
+
+type Streak struct {
+	StreakNum int64 `json:"streakNum"`
+}
+
 var currentUser string
+var hasAStreak bool
 
 var ctx = context.Background()
 
@@ -71,6 +81,8 @@ func main() {
 	// Attach entry retriever handler to HTTP server
 	http.Handle("/retrieveEntry", c.Handler(http.HandlerFunc(retrieveEntryHandler(client))))
 
+	http.Handle("/retrieveDates", c.Handler(http.HandlerFunc(retrieveDatesHandler(client))))
+
 	// Start HTTP server
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
@@ -89,6 +101,7 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 			"name":     user.Name,
 			"email":    user.Email,
 			"password": user.Password,
+			"streak":   0,
 		})
 		if err != nil {
 			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
@@ -133,6 +146,7 @@ func loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Login Successful")
 		currentUser = user.Name
+		hasAStreak = false
 	}
 }
 
@@ -144,26 +158,55 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 			http.Error(w, "error parsing form data", http.StatusBadRequest)
 			return
 		}
+
 		now := time.Now()
 		dateStr := now.Format("2006-01-02") // Format the current date as "yyyy-mm-dd"
 
-		// Write user data to Firestore
-		_, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
-
+		// Write user data and update streak to Firestore
+		docRef := client.Collection("users").Doc(currentUser)
+		_, err := docRef.Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
 			"journalEntry": entry.JournalEntry,
 			"mood":         entry.Mood,
 		})
 		if err != nil {
-			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
-			return
-		}
-		if err != nil {
 			http.Error(w, "error writing entry data to Firestore", http.StatusInternalServerError)
 			return
 		}
+		if hasAStreak {
+			_, err = docRef.Update(ctx, []firestore.Update{{Path: "streak", Value: firestore.Increment(1)}})
+		} else {
 
+			_, err = docRef.Update(ctx, []firestore.Update{{Path: "streak", Value: 1}})
+		}
+
+		if err != nil {
+			http.Error(w, "error updating streak field", http.StatusInternalServerError)
+			return
+		}
+
+		userDoc, err := client.Collection("users").Doc(currentUser).Get(ctx)
+		if err != nil {
+			http.Error(w, "error retrieving user data", http.StatusInternalServerError)
+			return
+		}
+
+		currentStreak := Streak{
+			StreakNum: userDoc.Data()["streak"].(int64),
+		}
+
+		jsonResponse, err := json.Marshal(currentStreak)
+
+		if err != nil {
+			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
+			return
+		}
+
+		// Write JSON string to response body
+		w.Header().Set("Content-Type", "application/json")
 		// Send success response
 		w.WriteHeader(http.StatusOK)
+		w.Write(jsonResponse)
+
 		fmt.Fprintf(w, "Entry data written to Firestore")
 	}
 }
@@ -217,4 +260,69 @@ func retrieveEntryHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		w.Write(jsonResponse)
 
 	}
+}
+
+func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Query Firestore to retrieve all journal entry documents of the current user
+		docs, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Documents(ctx).GetAll()
+		if err != nil {
+			http.Error(w, "error retrieving journal entries", http.StatusInternalServerError)
+			return
+		}
+
+		// Get yesterday's date
+		yesterday := getYesterday()
+
+		// Check if the last entry in the array of dates is equal to yesterday's date
+		lastEntry := len(docs) - 1
+
+		userDoc, err := client.Collection("users").Doc(currentUser).Get(ctx)
+		if err != nil {
+			http.Error(w, "error retrieving user data", http.StatusInternalServerError)
+			return
+		}
+
+		var currentStreak int64
+		currentStreak = 0
+
+		if lastEntry >= 0 {
+			lastEntryDate := docs[lastEntry].Ref.ID
+			if lastEntryDate == yesterday {
+				hasAStreak = true
+				// Get streak field from user document
+				currentStreak = userDoc.Data()["streak"].(int64)
+			}
+		}
+
+		// Extract IDs of documents, which correspond to dates of journal entries
+		var dates []EntryDate
+		for _, doc := range docs {
+			dates = append(dates, EntryDate{Date: doc.Ref.ID})
+		}
+
+		// Marshal dates and isYesterdayEntry into a JSON string
+		jsonBytes, err := json.Marshal(struct {
+			Dates         []EntryDate `json:"dates"`
+			CurrentStreak int64       `json:"CurrentStreak"`
+		}{
+			Dates:         dates,
+			CurrentStreak: currentStreak,
+		})
+		if err != nil {
+			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
+			return
+		}
+		jsonString := string(jsonBytes)
+
+		// Write JSON string to response body
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(jsonString))
+	}
+}
+
+func getYesterday() string {
+	yesterday := time.Now().AddDate(0, 0, -1)
+	yesterdayString := yesterday.Format("2006-01-02")
+	return yesterdayString
 }
