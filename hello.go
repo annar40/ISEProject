@@ -40,6 +40,7 @@ type EntryDate struct {
 }
 
 var currentUser string
+var hasAStreak bool
 
 var ctx = context.Background()
 
@@ -235,6 +236,11 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			http.Error(w, "error retrieving journal entries", http.StatusInternalServerError)
 			return
 		}
+		//TODO:   Call getYesterday()
+
+		//check is they have an entry from yesterday
+
+		//if they do, change boolean to true
 
 		// Extract IDs of documents, which correspond to dates of journal entries
 		var dates []EntryDate
@@ -254,4 +260,9 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(jsonString))
 	}
+}
+func getYesterday() string {
+	yesterday := time.Now().AddDate(0, 0, -1)
+	yesterdayString := yesterday.Format("2006-01-02")
+	return yesterdayString
 }
