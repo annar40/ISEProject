@@ -142,6 +142,7 @@ func loginHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Login Successful")
 		currentUser = user.Name
+		hasAStreak = false
 	}
 }
 
@@ -166,7 +167,13 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 			http.Error(w, "error writing entry data to Firestore", http.StatusInternalServerError)
 			return
 		}
-		_, err = docRef.Update(ctx, []firestore.Update{{Path: "streak", Value: firestore.Increment(1)}})
+		if hasAStreak {
+			_, err = docRef.Update(ctx, []firestore.Update{{Path: "streak", Value: firestore.Increment(1)}})
+		} else {
+
+			_, err = docRef.Update(ctx, []firestore.Update{{Path: "streak", Value: 1}})
+		}
+
 		if err != nil {
 			http.Error(w, "error updating streak field", http.StatusInternalServerError)
 			return
@@ -243,11 +250,11 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 
 		// Check if the last entry in the array of dates is equal to yesterday's date
 		lastEntry := len(docs) - 1
-		isYesterdayEntry := false
+
 		if lastEntry >= 0 {
 			lastEntryDate := docs[lastEntry].Ref.ID
 			if lastEntryDate == yesterday {
-				isYesterdayEntry = true
+				hasAStreak = true
 			}
 		}
 
@@ -263,7 +270,7 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			IsYesterdayEntry bool        `json:"isYesterdayEntry"`
 		}{
 			Dates:            dates,
-			IsYesterdayEntry: isYesterdayEntry,
+			IsYesterdayEntry: hasAStreak,
 		})
 		if err != nil {
 			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
