@@ -251,10 +251,23 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		// Check if the last entry in the array of dates is equal to yesterday's date
 		lastEntry := len(docs) - 1
 
+		userDoc, err := client.Collection("users").Doc(currentUser).Get(ctx)
+		if err != nil {
+			http.Error(w, "error retrieving user data", http.StatusInternalServerError)
+			return
+		}
+
+		var currentStreak int64
+		currentStreak = 0
+
 		if lastEntry >= 0 {
 			lastEntryDate := docs[lastEntry].Ref.ID
 			if lastEntryDate == yesterday {
 				hasAStreak = true
+				// Get streak field from user document
+				currentStreak = userDoc.Data()["streak"].(int64)
+				fmt.Print("--------CURRENT STREAK---------------")
+				fmt.Print(currentStreak)
 			}
 		}
 
@@ -266,11 +279,11 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 
 		// Marshal dates and isYesterdayEntry into a JSON string
 		jsonBytes, err := json.Marshal(struct {
-			Dates            []EntryDate `json:"dates"`
-			IsYesterdayEntry bool        `json:"isYesterdayEntry"`
+			Dates         []EntryDate `json:"dates"`
+			CurrentStreak int64       `json:"CurrentStreak"`
 		}{
-			Dates:            dates,
-			IsYesterdayEntry: hasAStreak,
+			Dates:         dates,
+			CurrentStreak: currentStreak,
 		})
 		if err != nil {
 			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
