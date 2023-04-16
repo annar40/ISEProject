@@ -39,6 +39,10 @@ type EntryDate struct {
 	Date string `json:"date"`
 }
 
+type Streak struct {
+	StreakNum int64 `json:"streakNum"`
+}
+
 var currentUser string
 var hasAStreak bool
 
@@ -154,6 +158,7 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 			http.Error(w, "error parsing form data", http.StatusBadRequest)
 			return
 		}
+
 		now := time.Now()
 		dateStr := now.Format("2006-01-02") // Format the current date as "yyyy-mm-dd"
 
@@ -179,8 +184,29 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 			return
 		}
 
+		userDoc, err := client.Collection("users").Doc(currentUser).Get(ctx)
+		if err != nil {
+			http.Error(w, "error retrieving user data", http.StatusInternalServerError)
+			return
+		}
+
+		currentStreak := Streak{
+			StreakNum: userDoc.Data()["streak"].(int64),
+		}
+
+		jsonResponse, err := json.Marshal(currentStreak)
+
+		if err != nil {
+			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
+			return
+		}
+
+		// Write JSON string to response body
+		w.Header().Set("Content-Type", "application/json")
 		// Send success response
 		w.WriteHeader(http.StatusOK)
+		w.Write(jsonResponse)
+
 		fmt.Fprintf(w, "Entry data written to Firestore")
 	}
 }
@@ -266,8 +292,6 @@ func retrieveDatesHandler(client *firestore.Client) func(w http.ResponseWriter, 
 				hasAStreak = true
 				// Get streak field from user document
 				currentStreak = userDoc.Data()["streak"].(int64)
-				fmt.Print("--------CURRENT STREAK---------------")
-				fmt.Print(currentStreak)
 			}
 		}
 
