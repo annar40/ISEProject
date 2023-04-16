@@ -156,18 +156,19 @@ func journalHandler(client *firestore.Client) func(w http.ResponseWriter, r *htt
 		now := time.Now()
 		dateStr := now.Format("2006-01-02") // Format the current date as "yyyy-mm-dd"
 
-		// Write user data to Firestore
-		_, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
-
+		// Write user data and update streak to Firestore
+		docRef := client.Collection("users").Doc(currentUser)
+		_, err := docRef.Collection("JournalEntry").Doc(dateStr).Set(ctx, map[string]interface{}{
 			"journalEntry": entry.JournalEntry,
 			"mood":         entry.Mood,
 		})
 		if err != nil {
-			http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
+			http.Error(w, "error writing entry data to Firestore", http.StatusInternalServerError)
 			return
 		}
+		_, err = docRef.Update(ctx, []firestore.Update{{Path: "streak", Value: firestore.Increment(1)}})
 		if err != nil {
-			http.Error(w, "error writing entry data to Firestore", http.StatusInternalServerError)
+			http.Error(w, "error updating streak field", http.StatusInternalServerError)
 			return
 		}
 
