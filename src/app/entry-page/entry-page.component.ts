@@ -24,6 +24,7 @@ export class EntryPageComponent {
   text: string = '';
   wordCount: number = 0;
   mood: string = '🙃 Ok';
+  currentStreak: any;
 
   updateWordCount() {
     this.wordCount = this.text.trim().split(' ').length;
@@ -34,7 +35,17 @@ export class EntryPageComponent {
     this.snackBar.open('Your journal entry was logged! Now choose a mood for the day', 'Ok', { duration: 3000 })
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data =>{
+      console.log('Get streak: ', data.CurrentStreak);
+      this.currentStreak = data.CurrentStreak;
+    
+    }, error  =>{
+      console.log('Error getting streak', error);
+    });
+
+
+  }
 
   onSubmit() {
     const requestBody = { text: this.text, mood: this.mood };
