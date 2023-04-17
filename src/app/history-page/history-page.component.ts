@@ -11,6 +11,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 })
 export class HistoryPageComponent {
   selected!: Date | null;
+  today: Date = new Date();
   journalEntry: any; // variable to store the journal entry response
 
   constructor(
