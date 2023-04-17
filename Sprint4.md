@@ -5,6 +5,8 @@ Make progress on issues uncompleted in Sprint 3, or new issues discovered during
 Write test for new functionality implemented. 
 
 A front-page readme that details requirements for running and using your application.
+
+Finish working on the homepage that was started in Sprint 3
 # SUBMISSIONS:
 Submission Format: GitHub & Video Links (Use comments on submission page for multiple links)
 
