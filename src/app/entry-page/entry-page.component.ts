@@ -44,7 +44,6 @@ export class EntryPageComponent {
       console.log('Error getting streak', error);
     });
 
-
   }
 
   onSubmit() {

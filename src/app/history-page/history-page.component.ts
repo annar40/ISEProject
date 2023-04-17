@@ -13,12 +13,24 @@ export class HistoryPageComponent {
   selected!: Date | null;
   today: Date = new Date();
   journalEntry: any; // variable to store the journal entry response
+  submittedDates: any;
 
+  
   constructor(
     private router: Router,
     private httpClient: HttpClient,
     private activatedRoute: ActivatedRoute
   ) {}
+
+  ngOnInit(): void {
+    this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data =>{
+      console.log('Get dates: ', data.dates);
+      this.submittedDates = data.dates;
+    }, error  =>{
+      console.log('Error getting dates', error);
+    });
+
+  }
 
   submitDate() {
     if (this.selected) {
