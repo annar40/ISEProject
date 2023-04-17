@@ -148,11 +148,21 @@ button:hover{
     width: 100%;
     height: 100%;
     background-size:cover;
-    background-image: url('../../../../ISEProject/images/about4.jpg');
+    background-image: url('../../../../ISEProject/images/explained2.jpg');
     background-position: center;
     background-repeat: no-repeat;
 }
 .aboutbutton
 {
     position: center;
+}
+.cta
+{
+    position: relative;
+    left: 33%;
+}
+.ABOUT{
+    position: relative;
+    left: 40%; 
+    font-size: 30px;
 }
