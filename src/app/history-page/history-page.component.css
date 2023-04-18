@@ -2,8 +2,9 @@
   width: 300px;
 }
 
-.highlighted-date {
-  background-color: red;
+button.example-custom-date-class {
+  background: rgb(116, 86, 163);
+  border-radius: 100%;
 }
 
 .blocked-date {
