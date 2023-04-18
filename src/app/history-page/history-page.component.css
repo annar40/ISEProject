@@ -1,6 +1,9 @@
 .demo-inline-calendar-card{
     width: 300px;
 }
+.highlighted-date{
+  background-color: red;
+}
 .journal-entry {
     margin-top: 20px;
     padding: 20px;
