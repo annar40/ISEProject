@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -20,55 +20,68 @@ export class HistoryPageComponent {
   isDateLoaded: boolean = false;
   isHighLoaded: boolean = false;
 
-  
+
   constructor(
     private router: Router,
     private httpClient: HttpClient,
     private activatedRoute: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data =>{
-      console.log('Get dates: ', data.dates);
-      this.submittedDates = data.dates;
-      console.log('submitted dates', this.submittedDates);
-      this.isDateLoaded = true;
-      /*The boolean is set to true once the dates are returned from the backend so that the calendar can load first.
-      The ngIf in the html file keeps the calendar from loading until it's true.
-      */
-    }, error  =>{
-      console.log('Error getting dates', error);
-    }
-    );
+    this.getDates();
   }
 
+  getDates(): void {
+    this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data => {
+      const dates = data.dates;
+      console.log('Get dates: ', dates);
+      this.submittedDates = dates.flat().map((dateObj: { date: string }) => dateObj.date);
+      // console.log('Submitted dates', this.submittedDates);
 
-  
-  highlightDate(date: Date): string {
-    if (date == null) {
+      console.log('Date format', new Date(this.submittedDates[0]).toLocaleDateString());
+
+      this.isDateLoaded = true;
+      console.log('Is date loaded?', this.isDateLoaded);
+
+      // Highlight all the dates
+      this.submittedDates.forEach((dateStr: string) => {
+        const workPls = new Date(dateStr);
+        this.highlightDate(workPls);
+      });
+
+    }, error => {
+      console.log('Error getting dates', error);
+
+    });
+  }
+
+  highlightDate(date: Date | null): string {
+    console.log('is date loaded?', this.isDateLoaded);
+
+    if (date === null || !this.isDateLoaded) {
       return '';
     }
-    const formattedDate = date.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
-    console.log('formatted',formattedDate);
-    /*The problem lies here, because for some reason isDateLoaded and the submittedDates array get turned to undefined inside
-    this function even though they were set in the ngOnInit function. If we can get them to hold their value the calendar should
-    properly be highlighted, i.e. everything else should be working already.
-    */
+    console.log('is date loaded?', this.isDateLoaded);
+  
+    const formattedDate = date.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit'});
+    console.log('formatted', formattedDate);
     console.log(this.submittedDates);
-    console.log('dateLoaded',this.isDateLoaded);
-    const isHighlighted =  this.submittedDates.includes(formattedDate);
-    
+
+    console.log('dateLoaded', this.isDateLoaded);
+    const isHighlighted = this.submittedDates.includes(formattedDate);
+
+    console.log("highlighted ", isHighlighted)
+
     return isHighlighted ? 'highlighted-date' : '';
   }
-  
-  
+
 
   submitDate() {
     if (this.selected) {
       const selectedDate = {
         date: this.selected.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })
       };
-      
+
       const dateJson = JSON.stringify(selectedDate);
       console.log(dateJson);
 
