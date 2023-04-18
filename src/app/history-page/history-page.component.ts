@@ -44,22 +44,16 @@ export class HistoryPageComponent {
 
 
   
-  highlightDate(date: Date): string {
-    if (date == null) {
-      return '';
+  highlightDate(date: Date): MatCalendarCellCssClasses {
+    if (!date || !this.isDateLoaded) {
+      return 'default-date';
     }
     const formattedDate = date.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
-    console.log('formatted',formattedDate);
-    /*The problem lies here, because for some reason isDateLoaded and the submittedDates array get turned to undefined inside
-    this function even though they were set in the ngOnInit function. If we can get them to hold their value the calendar should
-    properly be highlighted, i.e. everything else should be working already.
-    */
-    console.log(this.submittedDates);
-    console.log('dateLoaded',this.isDateLoaded);
-    const isHighlighted =  this.submittedDates.includes(formattedDate);
-    
-    return isHighlighted ? 'highlighted-date' : '';
+    const isHighlighted = this.submittedDates.includes(formattedDate);
+    return isHighlighted ? 'highlighted-date' : 'blocked-date';
   }
+  
+  
   
   
 
