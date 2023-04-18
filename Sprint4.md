@@ -7,6 +7,12 @@ Write test for new functionality implemented.
 A front-page readme that details requirements for running and using your application.
 
 Finish working on the homepage that was started in Sprint 3
+
+## things to still do
+- update the readme on running details
+- create ui message for failed log in attempt?
+- frontend streaks
+
 # SUBMISSIONS:
 Submission Format: GitHub & Video Links (Use comments on submission page for multiple links)
 
@@ -18,16 +24,27 @@ Presentation should include:
 - Finally, give an overview of your completed project as if you were pitching it to someone who has never seen it:
 - Demonstrate all front-end functionality
 - Detailed explanation of backend API
-# Sprint4.md
-- Detail work you've completed in Sprint 4
-- List frontend unit and Cypress tests
-- List backend unit tests
-- Show updated documentation for your backend API 
 
-# hi team. here's what we are going to accomplish
-- Resolve Calendar bug: Submitting date that does not have an entry stored crashes the backend.
-- Resolve Login bug: When creating an account, if the person uses a username that is already in the data base, it's email and password are overwritten with new account info
-- update the readme on running details
-- streaks?
-- create ui message for failed log in attempt
+# Work Accomplished
+### Bug Fixes: 
+- Resolved Calendar bug: User can now submit a date that does not have an entry stored without any backend crashes.
+- Resolved Duplicate User bug: User can no longer create an account with a username that exists the data base. The email and password are no longer overwritten. User is prompted with error message "User already exists."
+### Backend:
+- Created a handler that retrieves all of the dates in which the user has a stored entry. This handler is used to send the frontend the user's streak.
+- Updated the journal handler to adjust the user's streak upon submitting an entry. 
+### Frontend:
 - 
+
+# Tests
+### Backend:
+- func TestForDuplicateUsers(t * testing.T) : attempts to create a new account with a username that exists in database. 
+
+- Modified func TestRetrieveEntryHandler(t * testing.T) : selects a date that does not contain a stored entry. Expects a null response.
+
+
+### Frontend:
+List frontend unit and Cypress tests
+
+
+# Updated API
+
