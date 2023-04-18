@@ -8,6 +8,7 @@ import { AboutPageComponent } from './about-page/about-page.component';
 import { TextboxPageComponent } from './textbox-page/textbox-page.component';
 import { HistoryPageComponent } from './history-page/history-page.component';
 import { EntryPageComponent } from './entry-page/entry-page.component'
+import { MoodChartComponent } from './mood-chart/mood-chart.component';
 
 
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
   {path:'journal', component:TextboxPageComponent},
   {path: 'history', component:HistoryPageComponent},
   {path:'entry', component:EntryPageComponent},
+  {path: 'mood', component:MoodChartComponent},
   {path:'', redirectTo:'/home', pathMatch:'full'},
 ];
 

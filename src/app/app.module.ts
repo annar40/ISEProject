@@ -30,6 +30,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatLegacyChipsModule} from '@angular/material/legacy-chips';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatChipsModule} from '@angular/material/chips';
+import { MoodChartComponent } from './mood-chart/mood-chart.component';
 
 
 
@@ -45,6 +46,7 @@ import {MatChipsModule} from '@angular/material/chips';
 
     HistoryPageComponent,
     EntryPageComponent,
+    MoodChartComponent,
   ],
   imports: [
     FormsModule,
