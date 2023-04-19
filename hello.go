@@ -85,6 +85,8 @@ func main() {
 
 	http.Handle("/retrieveDates", c.Handler(http.HandlerFunc(retrieveDatesHandler(client))))
 
+	http.Handle("/retrieveMoods", c.Handler(http.HandlerFunc(retrieveMoodsHandler(client))))
+
 	// Start HTTP server
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
@@ -109,7 +111,7 @@ func signupHandler(client *firestore.Client) func(w http.ResponseWriter, r *http
 					"name":     user.Name,
 					"email":    user.Email,
 					"password": user.Password,
-          "streak":   0,
+					"streak":   0,
 				})
 				if err != nil {
 					http.Error(w, "error writing user data to Firestore", http.StatusInternalServerError)
@@ -340,4 +342,57 @@ func getYesterday() string {
 	yesterday := time.Now().AddDate(0, 0, -1)
 	yesterdayString := yesterday.Format("2006-01-02")
 	return yesterdayString
+}
+
+func retrieveMoodsHandler(client *firestore.Client) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Query Firestore to retrieve all journal entry documents of the current user
+		docs, err := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Documents(ctx).GetAll()
+		if err != nil {
+			http.Error(w, "error retrieving journal entries", http.StatusInternalServerError)
+			return
+		}
+
+		// Extract IDs of documents, which correspond to dates of journal entries
+		var dates []EntryDate
+		for _, doc := range docs {
+			dates = append(dates, EntryDate{Date: doc.Ref.ID})
+		}
+
+		// Loop through dates and print moods =========================apply better logic in here
+		for _, date := range dates {
+
+			// Get document with provided name
+			docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.Date)
+			// Get the data from the document
+			docData, err := docRef.Get(ctx)
+			if status.Code(err) != codes.NotFound {
+				if err != nil {
+					log.Fatalf("Failed to get journal entry: %v", err)
+				}
+
+				moodEntry, exists := docData.Data()["mood"]
+				if !exists {
+					log.Fatalf("Document does not have 'mood' field")
+				}
+				fmt.Println(moodEntry)
+			}
+		}
+
+		// Marshal dates and isYesterdayEntry into a JSON string ========================change this completely
+		jsonBytes, err := json.Marshal(struct {
+			Dates []EntryDate `json:"dates"`
+		}{
+			Dates: dates,
+		})
+		if err != nil {
+			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
+			return
+		}
+		jsonString := string(jsonBytes)
+
+		// Write JSON string to response body
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(jsonString))
+	}
 }
