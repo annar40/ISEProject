@@ -14,6 +14,7 @@ export class StatsPageComponent implements OnInit {
   currentStreak: any;
   moods: any;
   totalEntries: any;
+  testMoods: any;
 
 
   constructor(private httpClient: HttpClient) {}
