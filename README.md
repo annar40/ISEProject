@@ -25,3 +25,12 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+##Running the Code Step by Step
+
+1.) Make sure to install node.js and Golang
+2.) Run npm install to install all libraries and dependencies needed for the code. 
+3.) In the command line navigate to the folder of the project and run ng serve to compile the angular code 
+4.) In a new command line type go run hello.go to compile the backend API 
+5.) Navigate to `http://localhost:4200/signup` to get started with our application
