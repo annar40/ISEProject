@@ -19,7 +19,7 @@ Submission Format: GitHub & Video Links (Use comments on submission page for mul
 Narrated video presentation. Split the presentation such that each member of your team narrates a portion. 
 
 Presentation should include:
- - Demonstrate new functionality implemented.
+- Demonstrate new functionality implemented.
 - Show results of all unit tests (including those from Sprint 3).
 - Finally, give an overview of your completed project as if you were pitching it to someone who has never seen it:
 - Demonstrate all front-end functionality
@@ -33,12 +33,12 @@ Presentation should include:
 - Created a handler that retrieves all of the dates in which the user has a stored entry. This handler is used to send the frontend the user's streak.
 - Updated the journal handler to adjust the user's streak upon submitting an entry. 
 ### Frontend:
-- 
-
+- Updated calendar widget to highlight the dates of stored entries.
+- Added stats page that displays the user's streak.
 # Tests
 ### Backend:
 - func TestForDuplicateUsers(t * testing.T) : attempts to create a new account with a username that exists in database. 
-
+- func TestRetrieveDatesHandler(t * testing.T) : logs into existing user, calls retrieve date handler, checks for the entry dates.
 - Modified func TestRetrieveEntryHandler(t * testing.T) : selects a date that does not contain a stored entry. Expects a null response.
 
 
