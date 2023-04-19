@@ -353,40 +353,34 @@ func retrieveMoodsHandler(client *firestore.Client) func(w http.ResponseWriter, 
 			return
 		}
 
-		// Extract IDs of documents, which correspond to dates of journal entries
-		var dates []EntryDate
+		// Create a map to store the counts of each mood
+		moodCounts := make(map[string]int)
+
+		// Loop through dates and increment the count of each mood
 		for _, doc := range docs {
-			dates = append(dates, EntryDate{Date: doc.Ref.ID})
-		}
-
-		// Loop through dates and print moods =========================apply better logic in here
-		for _, date := range dates {
-
-			// Get document with provided name
-			docRef := client.Collection("users").Doc(currentUser).Collection("JournalEntry").Doc(date.Date)
 			// Get the data from the document
-			docData, err := docRef.Get(ctx)
-			if status.Code(err) != codes.NotFound {
-				if err != nil {
-					log.Fatalf("Failed to get journal entry: %v", err)
-				}
+			docData := doc.Data()
 
-				moodEntry, exists := docData.Data()["mood"]
-				if !exists {
-					log.Fatalf("Document does not have 'mood' field")
-				}
-				fmt.Println(moodEntry)
+			// Get the mood from the document
+			moodEntry, exists := docData["mood"]
+			if !exists {
+				log.Fatalf("Document does not have 'mood' field")
 			}
+			mood, ok := moodEntry.(string)
+			if !ok {
+				log.Fatalf("Invalid mood type: %v", moodEntry)
+			}
+
+			// Increment the count of the corresponding mood in the map
+			moodCounts[mood]++
 		}
 
-		// Marshal dates and isYesterdayEntry into a JSON string ========================change this completely
-		jsonBytes, err := json.Marshal(struct {
-			Dates []EntryDate `json:"dates"`
-		}{
-			Dates: dates,
+		// Marshal the mood counts into a JSON string with a property named "moods"
+		jsonBytes, err := json.Marshal(map[string]interface{}{
+			"moods": moodCounts,
 		})
 		if err != nil {
-			http.Error(w, "error marshaling dates into JSON", http.StatusInternalServerError)
+			http.Error(w, "error marshaling mood counts into JSON", http.StatusInternalServerError)
 			return
 		}
 		jsonString := string(jsonBytes)
@@ -394,5 +388,6 @@ func retrieveMoodsHandler(client *firestore.Client) func(w http.ResponseWriter, 
 		// Write JSON string to response body
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(jsonString))
+
 	}
 }
