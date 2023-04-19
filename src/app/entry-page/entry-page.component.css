@@ -1,44 +1,57 @@
-
-
-.stepper-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 2%;
-    width:90%;
-    margin-left:5%;
-    margin-right:5%;
-}
-  
-.mat-stepper-vertical{
-    width:100%;
+.stepper-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2%;
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
-  .text-box {
-    width: 100%;
-    height: 550px;
-    border: none;
-    background-color: transparent;
-    font-size: 16px;
-    box-sizing: border-box;
-    overflow: auto;
-    resize: none;
-  }
+.mat-stepper-vertical {
+  width: 100%;
+}
 
-  .text-box:focus {
-    outline: none;
-  }
-  
-  .title-container {
-    background-color: white;
-    padding-left:3%;
-    padding-top: 3%;
-  }
-  
-  .title {
-    color: black;
-    font-size: 2em;
-    font-weight: bold;
-    margin: 0;
-  }
-  
+.text-box {
+  width: 100%;
+  height: 550px;
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
+  box-sizing: border-box;
+  overflow: auto;
+  resize: none;
+}
+
+.text-box:focus {
+  outline: none;
+}
+
+.title-container {
+  background-color: white;
+  padding-left: 3%;
+  padding-top: 3%;
+}
+
+.title {
+  color: black;
+  font-size: 2.5em;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* New styles for the current streak button */
+
+.current-streak-button {
+  background-color: #2196f3;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.em;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.current-streak-button:hover {
+  background-color: #0d8bf2;
+}

@@ -1,7 +1,8 @@
-<mat-card class="demo-inline-calendar-card">
-  <mat-calendar [(selected)]="selected"></mat-calendar>
-</mat-card>
-
+<div *ngIf="isDateLoaded">
+  <mat-card class="demo-inline-calendar-card">
+    <mat-calendar [(selected)]="selected" [maxDate]="today" [dateClass]="dateClass"></mat-calendar>
+  </mat-card>
+<div>
 <p>Selected date: {{selected}}</p>
 
 <button mat-raised-button color="primary" (click)="submitDate()">Submit selection</button>
