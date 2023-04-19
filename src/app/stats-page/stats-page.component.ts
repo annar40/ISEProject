@@ -1,39 +1,60 @@
-import { Component, NgModule, OnInit } from '@angular/core';
-import { MoodChartComponent } from '../mood-chart/mood-chart.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-stats-page',
   templateUrl: './stats-page.component.html',
-  styleUrls: ['./stats-page.component.css'],
+  styleUrls: ['./stats-page.component.css']
 })
-
 export class StatsPageComponent implements OnInit {
+  @ViewChild('chartCanvas') chartCanvas!: ElementRef;
   currentStreak: any;
   moods: any;
-  constructor(
-    private router: Router,
-    private httpClient: HttpClient,
-    private activatedRoute: ActivatedRoute
-  ) {}
+
+
+  constructor(private httpClient: HttpClient) {}
 
   ngOnInit(): void {
-    
-
-    this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data =>{
-      console.log('Get streak: ', data.CurrentStreak);
+    this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data => {
+      console.log('Get streak:', data.CurrentStreak);
       this.currentStreak = data.CurrentStreak;
-      this.currentStreak = this.currentStreak +1;
-    }, error  =>{
-      console.log('Error getting streak', error);
+      this.currentStreak = this.currentStreak ;
+    }, error => {
+      console.log('Error getting streak:', error);
     });
 
-    // Adding the HTTP GET request to retrieve moods
     this.httpClient.get<any>('http://localhost:8000/retrieveMoods').subscribe(data => {
-      console.log('Get mood: ', data.moods);
+      console.log('Get mood:', data.moods);
+      const xValues = Object.keys(data.moods);
+      const yValues = Object.values(data.moods);
+      const barColors = [
+        '#EAEAEA',
+        '#CBC5EA',
+        '#73628A',
+        '#1F2C4A',
+        '#190320',
+        '#08060B'
+      ];
+
+      
+      
+
+      new Chart("myChart", {
+        type: "pie",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {}
+      });
     }, error => {
-      // Handle error here
+      console.log('Error getting moods:', error);
     });
   }
 }
