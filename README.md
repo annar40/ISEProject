@@ -38,3 +38,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 4.) In a new command line type `go run hello.go` to compile the backend API 
 
 5.) Navigate to `http://localhost:4200/signup` to get started with our application
+
+## Running the frontend tests
+on finalFrontTesting branch, with cypress installed run cypress open
