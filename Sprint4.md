@@ -1,18 +1,6 @@
 
-## things to still do
-- A front-page readme that details requirements for running and using your application.
-
-# SUBMISSIONS (video info):
-Submission Format: GitHub & Video Links (Use comments on submission page for multiple links)
-
-Narrated video presentation. Split the presentation such that each member of your team narrates a portion. 
-
-Presentation should include:
-- Demonstrate new functionality implemented.
-- Show results of all unit tests (including those from Sprint 3).
-- Finally, give an overview of your completed project as if you were pitching it to someone who has never seen it:
-- Demonstrate all front-end functionality
-- Detailed explanation of backend API
+# Video:
+https://youtu.be/lDy2yX6MFzw
 
 # Work Accomplished
 ### Bug Fixes: 
