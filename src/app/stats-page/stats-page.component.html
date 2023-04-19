@@ -1,0 +1,21 @@
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<h2 class="title">Here's a summary of your journaling</h2>
+
+<div class="container">
+  <div class="streak">
+    <p class="small-text">Current streak:</p>
+    <h3 class="large-text">{{currentStreak}}</h3>
+    <p class="small-text">days</p>
+  </div>
+  <div class="chart">
+    <canvas id="myChart"></canvas>
+  </div>
+  <div class="total">
+    <p class="small-text">A total of:</p>
+    <h3 class="large-text">{{totalEntries}}</h3>
+    <p class="small-text">journal entries</p>
+  </div>
+</div>
