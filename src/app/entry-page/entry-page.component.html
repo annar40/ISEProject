@@ -1,6 +1,7 @@
 <div class="title-container">
     <h2 class="title">Journal entry for {{ n | date:'EEEE, MMMM d' }}</h2>
 </div>
+<p>current streak: {{currentStreak}}</p>
 <div class="stepper-container">
 <mat-vertical-stepper linear = "true" #Stepper>
     <mat-step #firstStep label="Write at least 500 words of whatever comes to mind" completed = "false">
