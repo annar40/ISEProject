@@ -39,5 +39,14 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 5.) Navigate to `http://localhost:4200/signup` to get started with our application
 
+## Using the application
+1.) Create an account on the signup page or login to an existing account
+
+2.) Once logged in, you'll be redirected to add an entry on the entry page. There is a 500 word minimum for the text entry. In the second step, you can choose a mood that will be logged along with the date and the text entry.
+
+3.) Navigate to the history page, where you can view your past submissions via the calendar. Dates which have an entry are higlighted in purple on the calendar. The retrieved entry will show the date, mood, and text for the day you select.
+
+4.) On the stats page, you can see your current streak (the number of consecutive days for which you have an entry), your total entries, and a pie chart which shows the number of times you submitted an entry with each mood.
+
 ## Running the frontend tests
 on finalFrontTesting branch, with cypress installed run cypress open
