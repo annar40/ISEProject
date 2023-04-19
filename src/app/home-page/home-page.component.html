@@ -9,8 +9,8 @@
         <h1>Morning Pages</h1>
         <p> Get started now</p>
         <div>
-            <button type="button" routerLink="sign-up"><span></span> Sign Up</button>
-            <button type="button" routerLink="login"><span></span> Login</button>
+            <button type="button" onclick="location.href = '//localhost:4200/sign-up';"><span></span> Sign Up</button>
+            <button type="button" onclick="location.href = '//localhost:4200/login';"><span></span> Login</button>
         </div>
        </div>
     </div>
@@ -18,12 +18,24 @@
 <div class="gap">
     <h1> The Easiest Way to Express Yourself 📝 </h1>
     <p>Have the option to keep or dispose your journal 🗃 🗑</p>
+    <div class="cta">
+        <button mat-raised-button onclick="location.href = '//localhost:4200/sign-up';">Join Now!</button>
+        <button mat-raised-button color="primary" onclick="location.href = '//localhost:4200/about';">Learn More</button>
+      </div>
 </div>
 <div class="explain">
     <div class="explain">
       
     </div>
     <div class="startnow">
-        <button type="button" style="text-align: center;">Start Now</button>
+        
     </div>
     <div class="options"></div>
+    <div class="about">
+        <div class="aboutcontent">
+        </div>
+    </div>
+    <div class="ABOUT">
+    <button mat-raised-button color="primary" onclick="location.href = '//localhost:4200/about';">Keep Reading About Us</button>
+    </div>
+  
