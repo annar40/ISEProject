@@ -1,7 +1,7 @@
 
 ## things to still do
 - A front-page readme that details requirements for running and using your application.
-- create ui message for failed log in attempt?
+- fix pie chart
 
 # SUBMISSIONS (video info):
 Submission Format: GitHub & Video Links (Use comments on submission page for multiple links)
@@ -23,14 +23,18 @@ Presentation should include:
 - Modified user struct to include a streak characteristic.
 - Created a handler that retrieves all of the dates in which the user has a stored entry. This handler is used to send the frontend the user's streak.
 - Updated the journal handler to adjust the user's streak upon submitting an entry. 
+- Created a handler that retrieves all of the moods from all of the user's stored entries. This handler is used to send the frontend data for stats pie chart.
 ### Frontend:
 - Updated calendar widget to highlight the dates of stored entries.
-- Added stats page that displays the user's streak.
+- Created stats page that displays the user's streak and pie chart of all previous moods.
+- Implemented routing for all buttons on homepage.
+- Added history tab to navigation bar.
 # Tests
 ### Backend:
 - func TestForDuplicateUsers(t * testing.T) : attempts to create a new account with a username that exists in database. 
 - func TestRetrieveDatesHandler(t * testing.T) : logs into existing user, calls retrieve date handler, checks for the entry dates.
 - Modified func TestRetrieveEntryHandler(t * testing.T) : selects a date that does not contain a stored entry. Expects a null response.
+- func TestRetrieveMoodsHandler(t * testing.T) : logs into existing user, calls retrieve mood handler, checks for the entry moods.
 
 
 ### Frontend:
@@ -89,6 +93,15 @@ Response:
 
 5.     POST /retrieveDates - Retrieve all dates with journal entries
 This endpoint allows a user to retrieve all dates with journal entries for the logged in user. 
+
+Response:
+- Status code 200 on success
+- Status code 500 on any other error
+
+&nbsp;
+
+6.     POST /retrieveMoods - Retrieve all moods from all stored journal entries
+This endpoint allows a user to retrieve all moods ever stored of the logged in user. 
 
 Response:
 - Status code 200 on success
