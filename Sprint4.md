@@ -1,7 +1,6 @@
 
 ## things to still do
 - A front-page readme that details requirements for running and using your application.
-- fix pie chart
 
 # SUBMISSIONS (video info):
 Submission Format: GitHub & Video Links (Use comments on submission page for multiple links)
@@ -26,7 +25,7 @@ Presentation should include:
 - Created a handler that retrieves all of the moods from all of the user's stored entries. This handler is used to send the frontend data for stats pie chart.
 ### Frontend:
 - Updated calendar widget to highlight the dates of stored entries.
-- Created stats page that displays the user's streak and pie chart of all previous moods.
+- Created stats page that displays the user's streak, total entries, and pie chart of all previous moods.
 - Implemented routing for all buttons on homepage.
 - Added history tab to navigation bar.
 # Tests
@@ -38,7 +37,23 @@ Presentation should include:
 
 
 ### Frontend:
-List frontend unit and Cypress tests
+-     it('should disable tomorrow (4/20) on the calendar', () => {
+        cy.get('mat-calendar').click();
+        cy.get('.mat-calendar-body-cell-content').contains('20').parent().should('have.class', 'mat-calendar-body-disabled');
+    });
+    test to check if tomorrow's date is disabled (all future dates on the calendar of history page should be disabled)
+-  it('displays the current streak value', () => {
+    cy.get('.large-text').contains('60').should('be.visible');
+  });
+  checks that the streak value when its variable is set to 60 is displaying properly
+-  it('displays the total entries value', () => {
+    cy.get('.large-text').contains('120').should('be.visible');
+  });
+  checks that the total entries value when its variable is set to 120 is displaying properly
+-  it('displays the pie chart', () => {
+    cy.get('#myChart').should('be.visible');
+  });
+  checks that the pie chart is displayed when created
 
 
 # Updated API
