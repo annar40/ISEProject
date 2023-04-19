@@ -13,12 +13,16 @@ export class StatsPageComponent implements OnInit {
   @ViewChild('chartCanvas') chartCanvas!: ElementRef;
   currentStreak: any;
   moods: any;
+  totalEntries: any;
 
 
   constructor(private httpClient: HttpClient) {}
 
   ngOnInit(): void {
     this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data => {
+      console.log('Get dates', data.dates);
+      this.totalEntries = data.dates.length;
+      console.log('Total entries', this.totalEntries);
       console.log('Get streak:', data.CurrentStreak);
       this.currentStreak = data.CurrentStreak;
       this.currentStreak = this.currentStreak ;
