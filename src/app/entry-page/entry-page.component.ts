@@ -23,8 +23,6 @@ export class EntryPageComponent {
     private activatedRoute: ActivatedRoute) { }
   text: string = '';
   wordCount: number = 0;
-  mood: string = '🙃 Ok';
-  currentStreak: any;
 
   updateWordCount() {
     this.wordCount = this.text.trim().split(' ').length;
@@ -33,21 +31,18 @@ export class EntryPageComponent {
     this.firstStep.completed = true;
     this.Stepper.next();
     this.snackBar.open('Your journal entry was logged! Now choose a mood for the day', 'Ok', { duration: 3000 })
-  }
 
-  ngOnInit(): void {
-    this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data =>{
-      console.log('Get streak: ', data.CurrentStreak);
-      this.currentStreak = data.CurrentStreak;
-    
-    }, error  =>{
-      console.log('Error getting streak', error);
-    });
 
   }
+
+  
+  journalEntry: string = '';
+
+
+  ngOnInit(): void {}
 
   onSubmit() {
-    const requestBody = { text: this.text, mood: this.mood };
+    const requestBody = { text: this.text };
     console.log(requestBody);
 
     this.httpClient.post('http://localhost:8000/journalEntry', JSON.stringify(requestBody))
@@ -62,11 +57,12 @@ export class EntryPageComponent {
           if (error.status === 200) {
             
             console.log('Journal Entry Stored');
-            this.router.navigate(['../', 'history'], {
+            this.router.navigate(['../', 'entry'], {
               relativeTo: this.activatedRoute,
             });
           }
         }
       );
-  } 
+  }
+  
 }
