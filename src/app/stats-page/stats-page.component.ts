@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Chart, registerables } from 'chart.js';
+import { ActivatedRoute,Router } from '@angular/router';
 
 Chart.register(...registerables);
 
@@ -16,7 +17,15 @@ export class StatsPageComponent implements OnInit {
   totalEntries: any;
 
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private router: Router,
+    private httpClient: HttpClient,
+    private activatedRoute: ActivatedRoute
+  ) {}
+
+  createEntry() {
+    this.router.navigate(['/entry']);
+  }
 
   ngOnInit(): void {
     this.httpClient.get<any>('http://localhost:8000/retrieveDates').subscribe(data => {
