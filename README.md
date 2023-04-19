@@ -49,4 +49,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 4.) On the stats page, you can see your current streak (the number of consecutive days for which you have an entry), your total entries, and a pie chart which shows the number of times you submitted an entry with each mood.
 
 ## Running the frontend tests
-on finalFrontTesting branch, with cypress installed run cypress open
+On the finalFrontTesting branch, with cypress installed run 'cypress open'
