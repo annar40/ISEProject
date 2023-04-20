@@ -14,7 +14,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 
 3.) In the command line navigate to the folder of the project and run `ng serve` to compile the angular code 
 
-4.) In a new command line type, navigate to the same directory and `go run hello.go` to compile the backend API .  Select "Allow Access" on the Window Security Alert pop-up.
+4.) In a new command line, navigate to the same directory and type `go run hello.go` to compile the backend API .  Select "Allow Access" on the Window Security Alert pop-up.
 
 5.) Navigate to `http://localhost:4200/signup` to get started with our application
 
